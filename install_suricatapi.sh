@@ -1,6 +1,6 @@
 #!/usr/bin/bash
 #
-# Copyright (c) 2021, The beep-projects contributors
+# Copyright (c) 2022, The beep-projects contributors
 # this file originated from https://github.com/beep-projects
 # Do not remove the lines above.
 # This program is free software: you can redistribute it and/or modify
@@ -16,10 +16,19 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see https://www.gnu.org/licenses/
 #
-# bash install_condocam.ai.sh ;
+# bash install_suricatapi.sh ;
 # or pass the path of the sdcard
-# bash install_condocam.ai.sh /dev/mmcblk0 ;
- 
+# bash install_suricatapi.sh /dev/mmcblk0 ;
+
+
+
+RPI_IMAGE_URL="https://downloads.raspberrypi.org/raspios_lite_arm64/images/raspios_lite_arm64-2022-09-26/2022-09-22-raspios-bullseye-arm64-lite.img.xz"
+USE_LATEST_RASPI_OS=true
+
+RASPI_OS_TYPE="lite" # or "full"
+RASPI_CPU_TYPE="arm64" # or "armhf
+FILES_FOR_PI_FOLDER="scripts"
+
 echo 
 echo "=============================================================="
 echo " WARNING  WARNING  WARNING  WARNING  WARNING  WARNING  WARNING"
@@ -46,18 +55,12 @@ else
   SD_CARD_PATH="/dev/mmcblk0"
 fi
 
-RPI_IMAGE_URL="https://downloads.raspberrypi.org/raspios_lite_arm64/images/raspios_lite_arm64-2022-04-07/2022-04-04-raspios-bullseye-arm64-lite.img.xz"
-USE_LATEST_RASPI_OS=false
-
-RASPI_OS_TYPE="lite" # or "full"
-RASPI_CPU_TYPE="arm64" # or "armhf
-
 RASPI_OS_ID="raspios_${RASPI_OS_TYPE}_${RASPI_CPU_TYPE}"
 
 #get HOSTNAME for raspberry pi from firstrun.sh
-RPI_HOST_NAME=$( grep "^HOSTNAME=" condocam-pi/firstrun.sh | cut -d "=" -f 2 )
+RPI_HOST_NAME=$( grep "^HOSTNAME=" ${FILES_FOR_PI_FOLDER}/firstrun.sh | cut -d "=" -f 2 )
 #get USERNAME for raspberry pi from firstrun.sh
-RPI_USER_NAME=$( grep "^USERNAME=" condocam-pi/firstrun.sh | cut -d "=" -f 2 )
+RPI_USER_NAME=$( grep "^USERNAME=" ${FILES_FOR_PI_FOLDER}/firstrun.sh | cut -d "=" -f 2 )
 
 echo "SD_CARD_PATH = ${SD_CARD_PATH}"
 echo "RPI_HOST_NAME = ${RPI_HOST_NAME}"
@@ -230,8 +233,8 @@ echo
 
 echo "the UUID of the root partition might have changed for the downloaded image. Updating the entry in cmdline.txt"
 PARTUUID=$( sudo blkid | grep rootfs | grep -oP '(?<=PARTUUID=\").*(?=\")' )
-echo "set PARTUUID=$PARTUUID for rootfs in condocam-pi/cmdline.txt"
-sed -i "s/\(.*PARTUUID=\)[^ ]*\( .*\)/\1$PARTUUID\2/" condocam-pi/cmdline.txt
+echo "set PARTUUID=$PARTUUID for rootfs in ${FILES_FOR_PI_FOLDER}/cmdline.txt"
+sed -i "s/\(.*PARTUUID=\)[^ ]*\( .*\)/\1$PARTUUID\2/" ${FILES_FOR_PI_FOLDER}/cmdline.txt
 
 echo 
 echo "=============================================================="
@@ -240,8 +243,8 @@ echo "=============================================================="
 echo 
 
 echo "copy files to ${RPI_PATH}"
-echo "cp -r condocam-pi/* ${RPI_PATH}"
-cp -r condocam-pi/* "${RPI_PATH}"
+echo "cp -r ${FILES_FOR_PI_FOLDER}/* ${RPI_PATH}"
+cp -r ${FILES_FOR_PI_FOLDER}/* "${RPI_PATH}"
 echo
 
 #echo "press any key to continue..."
