@@ -38,6 +38,7 @@ echo "START firstrun.sh"
 #-------------------------------------------------------------------------------
 
 BOT_TOKEN=COPY_BOT_TOKEN_HERE
+HOME_NET=COPY_HOME_NET_HERE
 # which hostname do you want to give your raspberry pi?
 HOSTNAME=suricatapi
 # username: beep, password: projects

@@ -76,6 +76,7 @@ exec 1>/boot/secondrun.log 2>&1
 echo "START secondrun.sh"
 # the following variables should be set by firstrun.sh
 BOT_TOKEN=COPY_BOT_TOKEN_HERE
+HOME_NET=COPY_HOME_NET_HERE
 ENABLE_RASPAP=false
 # fixed configs
 #SERVICE_FOLDER=/etc/systemd/system
@@ -165,8 +166,43 @@ sudo apt install -y fail2ban
 # install suricata all dependencies
 echo "installing suricata and all dependencies"
 sudo apt install -y suricata
+#make sure suricata is not running
+sudo systemctl stop suricata
+
+# update rules
+sudo suricata-update
+# add a cron job to update the rules daily
+#write out current crontab
+sudo crontab -l > tmp_crontab
+#echo new cronjob into cron file
+echo "3 3 * * * suricata-update" >> tmp_crontab
+#install new cron file
+sudo crontab tmp_crontab
+sudo rm tmp_crontab
+
+#enable log rotate
+#/etc/logrotate.d/suricata
+#/var/log/suricata/*.log /var/log/suricata/*.json
+#{
+#    daily
+#    maxsize 1G
+#    rotate 7
+#    missingok
+#    nocompress
+#    create
+#    sharedscripts
+#    postrotate
+#        systemctl restart suricata.service
+#    endscript
+#}
+
+sudo systemctl start suricata
 
 
+#configure suricata
+#sudo vi /etc/suricata/suricata.yaml
+#HOME_NET: "[192.168.0.0/16,10.0.0.0/8,172.16.0.0/12]"
+sudo sed -i "s/^HOME_NET=.*/HOME_NET: \"\[${HOME_NET}\]\"}/" /etc/suricata/suricata.yaml
 
 if $ENABLE_RASPAP; then
   #install raspap
