@@ -39,6 +39,10 @@ echo "START firstrun.sh"
 
 BOT_TOKEN=COPY_BOT_TOKEN_HERE
 HOME_NET=COPY_HOME_NET_HERE
+# Get license info for GeoIP via https://www.maxmind.com/en/my_license_key
+MAXMIND_ACCOUNT_ID=COPY_MAXMIND_ACCOUNT_ID_HERE
+MAXMIND_LICENSE_KEY=COPY_MAXMIND_LICENSE_KEY_HERE
+
 # which hostname do you want to give your raspberry pi?
 HOSTNAME=suricatapi
 # username: beep, password: projects
@@ -74,6 +78,10 @@ ENABLE_RASPAP=false
 sed -i "s/^BOT_TOKEN=.*/BOT_TOKEN=${BOT_TOKEN}/" /boot/secondrun.sh
 #copy ENABLE_RASPAP into secondrun.sh
 sed -i "s/^ENABLE_RASPAP=.*/ENABLE_RASPAP=${ENABLE_RASPAP}/" /boot/secondrun.sh
+#copy MAXMIND_ACCOUNT_ID into secondrun.sh
+sed -i "s/^MAXMIND_ACCOUNT_ID=.*/MAXMIND_ACCOUNT_ID=${MAXMIND_ACCOUNT_ID}/" /boot/secondrun.sh
+#copy ENABLE_RASPAP into secondrun.sh
+sed -i "s/^MAXMIND_LICENSE_KEY=.*/MAXMIND_LICENSE_KEY=${MAXMIND_LICENSE_KEY}/" /boot/secondrun.sh
 
 #copy the USERNAME into secondrun.sh 
 sed -i "s/^USERNAME=.*/USERNAME=${USERNAME}/" /boot/secondrun.sh
