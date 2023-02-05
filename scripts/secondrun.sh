@@ -81,21 +81,6 @@ MAXMIND_ACCOUNT_ID=COPY_MAXMIND_ACCOUNT_ID_HERE
 MAXMIND_LICENSE_KEY=COPY_MAXMIND_LICENSE_KEY_HERE
 
 ENABLE_RASPAP=false
-# fixed configs
-#SERVICE_FOLDER=/etc/systemd/system
-#CONDOCAM_FOLDER=/etc/condocam
-#CONDOCAM_IMAGE_FOLDER=/var/log/condocam/images
-#CONDOCAMBOT_CONF="${CONDOCAM_FOLDER}/condocambot.conf"
-#PROTOTXT="MobileNetSSD_deploy.prototxt.txt"
-#CAFFEEMODEL="MobileNetSSD_deploy.caffemodel"
-# check the arch, as armv6l systems are not properly supported
-ARCH=$(arch)
-
-#echo "create required directories"
-#echo "mkdir -p ${CONDOCAM_FOLDER}"
-#sudo mkdir -p "${CONDOCAM_FOLDER}"
-#echo "mkdir -p ${CONDOCAM_IMAGE_FOLDER}"
-#sudo mkdir -p "${CONDOCAM_IMAGE_FOLDER}"
 
 # internet connectivity is required for installing required packages and updating the system
 waitForInternet
@@ -130,12 +115,6 @@ sudo ./telegram.bot --install
 #ADMIN_LANGUAGE_CODE=$( echo "${UPDATEJSON}" | jq ".result | .[0].${UPDATE_TYPE}.from.language_code" )
 
 #telegram.bot --bottoken "${BOT_TOKEN}" --chatid "${CHAT_ID}" --success --text "telegram.bot is installed successfully, continuing to install the rest of the system."
-
-#if [[ "${ARCH}" == "armv6l" ]]; then
-#	telegram.bot --bottoken "${BOT_TOKEN}" --chatid "${CHAT_ID}" --warning --text "You are trying to run **condocam.ai** on an **armv6l** based system, which is **not** properly supported.\n
-#	Installation will continue, but **people detection** will not be enabled, because **OpenCV** has no packages available for this system and you might experience problems with **Motion** itself.\n
-#	If you know how to fix these issue, please contribute to the project."
-#fi
 
 # now we want to update the system and install packages
 echo "updating the system"
@@ -183,6 +162,7 @@ sudo systemctl stop suricata
 sudo suricata-update
 # add a cron job to update the rules daily
 #write out current crontab
+# shellcheck disable=SC2024 # we want to run crontab for sudo
 sudo crontab -l > tmp_crontab
 #echo new cronjob into cron file
 echo "3 3 * * * suricata-update" >> tmp_crontab
@@ -220,96 +200,105 @@ sudo apt install -y default-jre
 #sudo wget https://packages.elastic.co/GPG-KEY-elasticsearch
 #sudo apt install -y elasticsearch
 # second install elasticsearch
-wget https://www.elastic.co/downloads/elasticsearch
-ES_JSON=$( grep -o '__NEXT_DATA__.*</script>' elasticsearch  | sed 's/\(__NEXT_DATA__.*json">\|<\/script>\)//g' | jq '[.. |."package"? | select(. != null)][0][] | select(.title == "Linux aarch64") | {url, hash_url}' )
-ES_URL=$( echo "${ES_JSON}" | jq -r ".url" )
-ES_HASH_URL=$( echo "${ES_JSON}" | jq -r ".hash_url" )
+#wget https://www.elastic.co/downloads/elasticsearch
+#ES_JSON=$( grep -o '__NEXT_DATA__.*</script>' elasticsearch  | sed 's/\(__NEXT_DATA__.*json">\|<\/script>\)//g' | jq '[.. |."package"? | select(. != null)][0][] | select(.title == "Linux aarch64") | {url, hash_url}' )
+#ES_URL=$( echo "${ES_JSON}" | jq -r ".url" )
+#ES_HASH_URL=$( echo "${ES_JSON}" | jq -r ".hash_url" )
 
-ES_TARGZ=$(basename "${ES_URL}")
-ES_TARGZ_HASH=$(basename "${ES_HASH_URL}")
-ES="${ES_TARGZ//-linux-aarch64.tar.gz/}"
-if [ -d "${ES}" ]; then
-  echo "${ES} directory found. Skipping download."
-elif [ -f "${ES_TARGZ}" ]; then
-  echo "${ES_TARGZ} file found. Skipping download."
-else
-  echo "downloading Elasticsearch package from server. please wait ..."
-  rm   "${ES_TARGZ}.downloading"
-  wget "${ES_URL}" -O "${ES_TARGZ}.downloading"
-  mv   "${ES_TARGZ}.downloading" "${ES_TARGZ}"
+#ES_TARGZ=$(basename "${ES_URL}")
+#ES_TARGZ_HASH=$(basename "${ES_HASH_URL}")
+#ES="${ES_TARGZ//-linux-aarch64.tar.gz/}"
+#if [ -d "${ES}" ]; then
+#  echo "${ES} directory found. Skipping download."
+#elif [ -f "${ES_TARGZ}" ]; then
+#  echo "${ES_TARGZ} file found. Skipping download."
+#else
+#  echo "downloading Elasticsearch package from server. please wait ..."
+#  rm   "${ES_TARGZ}.downloading"
+#  wget "${ES_URL}" -O "${ES_TARGZ}.downloading"
+#  mv   "${ES_TARGZ}.downloading" "${ES_TARGZ}"#
+#
+#  echo "downloading hash file for package from server. please wait ..."
+#  rm "${ES_TARGZ_HASH}"
+#  wget "${ES_HASH_URL}"
 
-  echo "downloading hash file for package from server. please wait ..."
-  rm "${ES_TARGZ_HASH}"
-  wget "${ES_HASH_URL}"
+#  echo "checking hash value of package file"
+#  HASH_OK=$( sha512sum -c "${ES_TARGZ_HASH}" | grep "${ES_TARGZ}: OK" )
+#  if [ -z "${HASH_OK}" ]; then
+#    echo "hash does not match, aborting"
+#    exit
+#  else
+#    echo "hash is ok"
+#  fi
+#fi
 
-  echo "checking hash value of package file"
-  HASH_OK=$( sha512sum -c "${ES_TARGZ_HASH}" | grep "${ES_TARGZ}: OK" )
-  if [ -z "${HASH_OK}" ]; then
-    echo "hash does not match, aborting"
-    exit
-  else
-    echo "hash is ok"
-  fi
-fi
-
-echo "extract the Elasticsearch package"
-if [ -d "${ES}" ]; then
-  echo "directory found, skip the extract"
-else
-  echo "extracting package. please wait a few minutes ..."
-  echo "tar -zxvf ${ES_TARGZ}"
-  tar -zxvf "${ES_TARGZ}"
-fi
+#echo "extract the Elasticsearch package"
+#if [ -d "${ES}" ]; then
+#  echo "directory found, skip the extract"
+#else
+#  echo "extracting package. please wait a few minutes ..."
+#  echo "tar -zxvf ${ES_TARGZ}"
+#  tar -zxvf "${ES_TARGZ}"
+#fi
 
 ######## get GeoIP ipdate #####################
-wget https://github.com/maxmind/geoipupdate/releases/latest -O geoipupdate.html
-GEOIPUPDATE_VERSION=$( sed -n 's/^.*<h1 [^>]*>\([^<]*\)<\/h1>.*$/\1/p' geoipupdate.html )
-GEOIPUPDATE_DEB="geoipupdate_${GEOIPUPDATE_VERSION}_linux_arm64.deb"
-GEOIPUPDATE_URL="https://github.com/maxmind/geoipupdate/releases/latest/download/${GEOIPUPDATE_DEB}"
-wget ${GEOIPUPDATE_URL}
-sudo dpkg -i ${GEOIPUPDATE_DEB}
+#sudo wget https://github.com/maxmind/geoipupdate/releases/latest -O geoipupdate.html
+#GEOIPUPDATE_VERSION=$( sed -n 's/^.*<h1 [^>]*>\([^<]*\)<\/h1>.*$/\1/p' geoipupdate.html )
+#GEOIPUPDATE_DEB="geoipupdate_${GEOIPUPDATE_VERSION}_linux_arm64.deb"
+#GEOIPUPDATE_URL="https://github.com/maxmind/geoipupdate/releases/latest/download/${GEOIPUPDATE_DEB}"
+#sudo wget "${GEOIPUPDATE_URL}"
+#sudo dpkg -i "${GEOIPUPDATE_DEB}"
 #configure geoipupdate
 #TODO remove this
-MAXMIND_ACCOUNT_ID="813423"
-MAXMIND_LICENSE_KEY="C7iq41CkdoW2R0KV"
-sudo sed -i "s/^AccountID YOUR_ACCOUNT_ID_HERE.*/AccountID ${MAXMIND_ACCOUNT_ID}/" /etc/GeoIP.conf
-sudo sed -i "s/^LicenseKey YOUR_LICENSE_KEY_HERE.*/LicenseKey ${MAXMIND_LICENSE_KEY}/" /etc/GeoIP.conf
+#MAXMIND_ACCOUNT_ID="813423"
+#MAXMIND_LICENSE_KEY="C7iq41CkdoW2R0KV"
+#sudo sed -i "s/^AccountID YOUR_ACCOUNT_ID_HERE.*/AccountID ${MAXMIND_ACCOUNT_ID}/" /etc/GeoIP.conf
+#sudo sed -i "s/^LicenseKey YOUR_LICENSE_KEY_HERE.*/LicenseKey ${MAXMIND_LICENSE_KEY}/" /etc/GeoIP.conf
 
 # add a cron job to update the geoip dbs regularily
-#write out current crontab
-sudo crontab -l > tmp_crontab
+# write out current crontab
+# shellcheck disable=SC2024 # we want to run crontab for sudo
+#sudo crontab -l > tmp_crontab
 #echo new cronjob into cron file
-echo "46 13 * * 0,4 /usr/bin/geoipupdate" >> tmp_crontab
+#echo "46 13 * * 0,4 /usr/bin/geoipupdate" >> tmp_crontab
 #install new cron file
-sudo crontab tmp_crontab
-sudo rm tmp_crontab
+#sudo crontab tmp_crontab
+#sudo rm tmp_crontab
 
 ################# DEB WAY ###################
 wget https://www.elastic.co/downloads/elasticsearch -O elasticsearch.html
 
 ELK_VERSION=$( sed -n 's/^.*Version: <\/strong>\([^<]*\).*$/\1/p' elasticsearch.html )
-ELK_REPO_VERSION=$( echo ${ELK_VERSION} | grep -o "^[^\.]" )
+ELK_REPO_VERSION=$( echo "${ELK_VERSION}" | grep -o "^[^\.]" )
 #Download and install the public signing key
 wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo gpg --dearmor -o /usr/share/keyrings/elasticsearch-keyring.gpg
 #install the apt-transport-https
 waitForApt
 sudo apt install apt-transport-https
 #add the ELK repo to apt
-echo "deb [signed-by=/usr/share/keyrings/elasticsearch-keyring.gpg] https://artifacts.elastic.co/packages/${ELK_REPO_VERSION}.x/apt stable main" | sudo tee /etc/apt/sources.list.d/elastic-${ELK_REPO_VERSION}.x.list
+echo "deb [signed-by=/usr/share/keyrings/elasticsearch-keyring.gpg] https://artifacts.elastic.co/packages/${ELK_REPO_VERSION}.x/apt stable main" | sudo tee "/etc/apt/sources.list.d/elastic-${ELK_REPO_VERSION}.x.list"
 waitForApt
 sudo apt update
 sudo apt install -y elasticsearch kibana logstash
 # limit elasticsearch heap size
-echo "-Xms256m" | sudo tee /etc/elasticsearch/jvm.options.d/mem256.options
-echo "-Xmx256m" | sudo tee -a /etc/elasticsearch/jvm.options.d/mem256.options
+echo "-Xms256m" | sudo tee /etc/elasticsearch/jvm.options.d/suricatapi.options
+echo "-Xmx256m" | sudo tee -a /etc/elasticsearch/jvm.options.d/suricatapi.options
+# WARNING: You are running with Java 19. To make full use of MMapDirectory, please pass '--enable-preview' to the Java command line.
+echo "--enable-preview" | sudo tee -a /etc/elasticsearch/jvm.options.d/suricatapi.options
+# TODO
+# limit also logstash and kibana heap size
 # change discovery to single-node
 sudo sed -i "s/\(# For more information, consult the discovery and cluster formation module documentation.\)/\1\n#\ndiscovery.type: single-node/" /etc/elasticsearch/elasticsearch.yml
 # uncomment cluster.initial_master_nodes: if not already commented
 sudo sed -i "/^[^#]*cluster.initial_master_nodes:/s/^/#/g" /etc/elasticsearch/elasticsearch.yml
 # start elasticsearch
-# sudo systemctl start elasticsearch.service
-#
-# cd /usr/share/elasticsearch/bin
+sudo systemctl start elasticsearch.service
+# to proceed we need to reset the passwords for the elastic user
+cd /usr/share/elasticsearch/bin
+ES_PWD=$( sudo ./elasticsearch-reset-password --auto --batch -u elastic | sed -n "s/New value: \(.*\)/\1/p" )
+# stop elasticsearch again
+sudo systemctl stop elasticsearch.service
+
 # sudo ./elasticsearch-setup-passwords auto
 
 # (Optional) Open a new terminal and verify that you can connect to your Elasticsearch cluster by making an authenticated call. Enter the password for the elastic user when prompted:
@@ -318,19 +307,25 @@ sudo sed -i "/^[^#]*cluster.initial_master_nodes:/s/^/#/g" /etc/elasticsearch/el
 # bin/kibana-setup --enrollment-token <enrollment-token>
 
 #disable the service that started this script
-sudo systemctl disable secondrun.service
-echo "BREAK in secondrun.sh, rebooting the system"
-sleep 2
-sudo reboot
-
+#sudo systemctl disable secondrun.service
+#echo "BREAK in secondrun.sh, rebooting the system"
+#sleep 2
+#sudo reboot
 
 #copy configs for logstash
-sudo cp /boot/10-input.conf /etc/logstash/conf.d/
-sudo cp /boot/30-output.conf /etc/logstash/conf.d/
+sudo cp /boot/10-suricata.conf /etc/logstash/conf.d/
 #update logstash plugins
 sudo /usr/share/logstash/bin/logstash-plugin update
 #configure kibana to be accessible from remote machines
 sudo sed -i "s/.*server.host: .*/server.host: 0.0.0.0/g" /etc/kibana/kibana.yml
+# because of th elimited ressources of the raspberry pi, we have to ensure the start order of the services
+# the start order should be: elasticsearch, logstash, kibana
+sudo sed -i "/^Description=logstash.*/a Requires=elasticsearch.service\nAfter=elasticsearch.service" /usr/lib/systemd/system/logstash.service
+sudo sed -i "s/^After=network-online.target.*/Requires=logstash.service\nAfter=logstash.service/g" /usr/lib/systemd/system/kibana.service
+
+# TODO what was the ES_PWD needed for?
+# TODO disable all that security configs
+
 #enable the new services
 sudo systemctl daemon-reload
 sudo systemctl enable elasticsearch.service

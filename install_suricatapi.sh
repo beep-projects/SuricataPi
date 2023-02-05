@@ -28,6 +28,7 @@ USE_LATEST_RASPI_OS=true
 RASPI_OS_TYPE="lite" # or "full"
 RASPI_CPU_TYPE="arm64" # or "armhf
 FILES_FOR_PI_FOLDER="scripts"
+HOME_NET="192.168.1.0/32,10.0.0.0/25"
 
 echo 
 echo "=============================================================="
@@ -251,16 +252,16 @@ echo
 #read -rn 1 -s
 #echo
 
-echo 
-echo "=============================================================="
-echo " enable hdmi_force_hotplug"
-echo "=============================================================="
-echo 
+#echo 
+#echo "=============================================================="
+#echo " enable hdmi_force_hotplug"
+#echo "=============================================================="
+#echo 
 # enable hdmi_force_hotplug in the Rapberry Pi config.txt
-# this is quite helpful if you want to connect a display for some reason to a running condocam.ai. E.g. for debugging problems
-echo "sed -i \"/hdmi_force_hotplug=/c\hdmi_force_hotplug=1\" \"${RPI_PATH}/config.txt\""
+# this is quite helpful if you want to connect a display for some reason to a running suricatapi. E.g. for debugging problems
+#echo "sed -i \"/hdmi_force_hotplug=/c\hdmi_force_hotplug=1\" \"${RPI_PATH}/config.txt\""
 
-sed -i "/hdmi_force_hotplug=/c\hdmi_force_hotplug=1" "${RPI_PATH}/config.txt"
+#sed -i "/hdmi_force_hotplug=/c\hdmi_force_hotplug=1" "${RPI_PATH}/config.txt"
 
 echo 
 echo "=============================================================="
@@ -281,14 +282,15 @@ echo "BEFORE you continue, send any message to your telegram bot!"
 echo "Then press any key to continue..."
 read -rn 1 -s
 echo
-echo "all work is done. Please insert the SD card into your raspberry pi"
+echo "All work is done. Please insert the SD card into your raspberry pi"
 echo "NOTE: when starting up, your raspberry pi should reboot 4 times until all setup work is finished and condocam.ai is up and running. Be patient!"
 
 echo
 echo "///////////////////////////////////////////////////////////////"
 echo
-echo "               ssh -x ${RPI_USER_NAME}@${RPI_HOST_NAME}.local"
-echo "               http://${RPI_HOST_NAME}:8765/"
+echo "               ssh ${RPI_USER_NAME}@${RPI_HOST_NAME}.local"
+echo "               http://${RPI_HOST_NAME}:5601/"
+echo "               tail -f /boot/secondrun.log"
 echo
 echo "///////////////////////////////////////////////////////////////"
 echo
