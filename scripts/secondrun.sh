@@ -285,12 +285,16 @@ echo "-Xms256m" | sudo tee /etc/elasticsearch/jvm.options.d/suricatapi.options
 echo "-Xmx256m" | sudo tee -a /etc/elasticsearch/jvm.options.d/suricatapi.options
 # WARNING: You are running with Java 19. To make full use of MMapDirectory, please pass '--enable-preview' to the Java command line.
 echo "--enable-preview" | sudo tee -a /etc/elasticsearch/jvm.options.d/suricatapi.options
-# TODO
-# limit also logstash and kibana heap size
 # change discovery to single-node
 sudo sed -i "s/\(# For more information, consult the discovery and cluster formation module documentation.\)/\1\n#\ndiscovery.type: single-node/" /etc/elasticsearch/elasticsearch.yml
 # uncomment cluster.initial_master_nodes: if not already commented
 sudo sed -i "/^[^#]*cluster.initial_master_nodes:/s/^/#/g" /etc/elasticsearch/elasticsearch.yml
+# disable security features for elasticsearch
+sudo sed -i "s/^xpack.security.enabled:.*/xpack.security.enabled: false/g" /etc/elasticsearch/elasticsearch.yml
+sudo sed -i "s/^xpack.security.enrollment.enabled:.*/xpack.security.enrollment.enabled: false/g" /etc/elasticsearch/elasticsearch.yml
+sudo sed -i '/^.*xpack.security.http.ssl.*/{:a;n;/^.*enabled: .*/!ba;s#^.*enabled:.*#  enabled: true#}' /etc/elasticsearch/elasticsearch.yml
+sudo sed -i '/^.*xpack.security.transport.ssl.*/{:a;n;/^.*enabled: .*/!ba;s#^.*enabled:.*#  enabled: true#}' /etc/elasticsearch/elasticsearch.yml
+
 # start elasticsearch
 sudo systemctl start elasticsearch.service
 # to proceed we need to reset the passwords for the elastic user
@@ -325,6 +329,8 @@ sudo sed -i "s/^After=network-online.target.*/Requires=logstash.service\nAfter=l
 
 # TODO what was the ES_PWD needed for?
 # TODO disable all that security configs
+# TODO
+# limit also logstash and kibana heap size
 
 #enable the new services
 sudo systemctl daemon-reload
