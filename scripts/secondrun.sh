@@ -173,6 +173,10 @@ sudo rm tmp_crontab
 #configure suricata
 #set HOME_NET. Note we use | as delimiter for sed, because HOME_NET has / for subnet notation inside
 sudo sed -i "s|^\([^#]*\)HOME_NET:.*|\1HOME_NET: \"\[${HOME_NET}\]\"|" /etc/suricata/suricata.yaml
+#adjust ring buffer settings for better capture performance
+#sudo sed -i "s|^\([^#]*\)#*use-mmap.*|\1use-mmap: yes|" /etc/suricata/suricata.yaml
+#sudo sed -i "s|^\([^#]*\)#*mmap-locked.*|\1mmap-locked: yes|" /etc/suricata/suricata.yaml
+sudo sed -i "s|^\([^#]*\)#*ring-size.*|\1ring-size: 2048|" /etc/suricata/suricata.yaml
 
 #set the default-rule-path to /var/lib/suricata/rules/suricata.rules
 sudo sed -i "s|^default-rule-path:.*|default-rule-path: /var/lib/suricata/rules/|" /etc/suricata/suricata.yaml
@@ -190,7 +194,7 @@ sudo suricata-update enable-source ptresearch/attackdetection
 sudo suricata-update enable-source etnetera/aggressive
 
 #start suricata
-sudo systemctl start suricata
+sudo systemctl start suricata.service
 
 # Setup ELK stack
 # first install java
@@ -340,6 +344,8 @@ sudo systemctl enable logstash.service
 
 # for accessing kibana, you need to run
 # sudo /usr/share/elasticsearch/bin/elasticsearch-create-enrollment-token --scope kibana
+
+curl -X POST https://127.0.0.0:5601/api/kibana/dashboards/import?overwrite=true -H 'kbn-xsrf: true' -H 'Content-Type: application/json' --form file=@/boot/SuricataPi.ndjson
 
 if $ENABLE_RASPAP; then
   #install raspap
