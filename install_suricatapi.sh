@@ -28,7 +28,6 @@ USE_LATEST_RASPI_OS=true
 RASPI_OS_TYPE="lite" # or "full"
 RASPI_CPU_TYPE="arm64" # or "armhf
 FILES_FOR_PI_FOLDER="scripts"
-HOME_NET="192.168.1.0/32,10.0.0.0/25"
 
 echo 
 echo "=============================================================="
