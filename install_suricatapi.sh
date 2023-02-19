@@ -21,9 +21,10 @@
 # bash install_suricatapi.sh /dev/mmcblk0 ;
 
 
-
+# this is the last successfully tested Raspberry Pi OS release for this project
 RPI_IMAGE_URL="https://downloads.raspberrypi.org/raspios_lite_arm64/images/raspios_lite_arm64-2022-09-26/2022-09-22-raspios-bullseye-arm64-lite.img.xz"
-USE_LATEST_RASPI_OS=true
+# If you are willing to fix things, go with the latest release
+USE_LATEST_RASPI_OS=false
 
 RASPI_OS_TYPE="lite" # or "full"
 RASPI_CPU_TYPE="arm64" # or "armhf

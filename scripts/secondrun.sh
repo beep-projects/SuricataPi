@@ -136,82 +136,15 @@ sudo suricata-update enable-source ptresearch/attackdetection
 #sudo suricata-update enable-source sslbl/ssl-fp-blacklist
 #sudo suricata-update enable-source tgreen/hunting
 sudo suricata-update enable-source etnetera/aggressive
+# to save space, rotate suricata logs daily and keep only one copy
+sudo sed -i "s/^\(.*\)rotate .*/\1rotate 1\n\1daily/g" /etc/logrotate.d/suricata
 
 #start suricata
 sudo systemctl start suricata.service
 
 # Setup ELK stack
 # first install java
-sudo apt install -y default-jre
-#sudo mkdir /usr/share/elasticsearch
-#cd /usr/share/elasticsearch
-#sudo wget https://packages.elastic.co/GPG-KEY-elasticsearch
-#sudo apt install -y elasticsearch
-# second install elasticsearch
-#wget https://www.elastic.co/downloads/elasticsearch
-#ES_JSON=$( grep -o '__NEXT_DATA__.*</script>' elasticsearch  | sed 's/\(__NEXT_DATA__.*json">\|<\/script>\)//g' | jq '[.. |."package"? | select(. != null)][0][] | select(.title == "Linux aarch64") | {url, hash_url}' )
-#ES_URL=$( echo "${ES_JSON}" | jq -r ".url" )
-#ES_HASH_URL=$( echo "${ES_JSON}" | jq -r ".hash_url" )
-
-#ES_TARGZ=$(basename "${ES_URL}")
-#ES_TARGZ_HASH=$(basename "${ES_HASH_URL}")
-#ES="${ES_TARGZ//-linux-aarch64.tar.gz/}"
-#if [ -d "${ES}" ]; then
-#  echo "${ES} directory found. Skipping download."
-#elif [ -f "${ES_TARGZ}" ]; then
-#  echo "${ES_TARGZ} file found. Skipping download."
-#else
-#  echo "downloading Elasticsearch package from server. please wait ..."
-#  rm   "${ES_TARGZ}.downloading"
-#  wget "${ES_URL}" -O "${ES_TARGZ}.downloading"
-#  mv   "${ES_TARGZ}.downloading" "${ES_TARGZ}"#
-#
-#  echo "downloading hash file for package from server. please wait ..."
-#  rm "${ES_TARGZ_HASH}"
-#  wget "${ES_HASH_URL}"
-
-#  echo "checking hash value of package file"
-#  HASH_OK=$( sha512sum -c "${ES_TARGZ_HASH}" | grep "${ES_TARGZ}: OK" )
-#  if [ -z "${HASH_OK}" ]; then
-#    echo "hash does not match, aborting"
-#    exit
-#  else
-#    echo "hash is ok"
-#  fi
-#fi
-
-#echo "extract the Elasticsearch package"
-#if [ -d "${ES}" ]; then
-#  echo "directory found, skip the extract"
-#else
-#  echo "extracting package. please wait a few minutes ..."
-#  echo "tar -zxvf ${ES_TARGZ}"
-#  tar -zxvf "${ES_TARGZ}"
-#fi
-
-######## get GeoIP ipdate #####################
-#sudo wget https://github.com/maxmind/geoipupdate/releases/latest -O geoipupdate.html
-#GEOIPUPDATE_VERSION=$( sed -n 's/^.*<h1 [^>]*>\([^<]*\)<\/h1>.*$/\1/p' geoipupdate.html )
-#GEOIPUPDATE_DEB="geoipupdate_${GEOIPUPDATE_VERSION}_linux_arm64.deb"
-#GEOIPUPDATE_URL="https://github.com/maxmind/geoipupdate/releases/latest/download/${GEOIPUPDATE_DEB}"
-#sudo wget "${GEOIPUPDATE_URL}"
-#sudo dpkg -i "${GEOIPUPDATE_DEB}"
-#configure geoipupdate
-#TODO remove this
-#MAXMIND_ACCOUNT_ID="813423"
-#MAXMIND_LICENSE_KEY="C7iq41CkdoW2R0KV"
-#sudo sed -i "s/^AccountID YOUR_ACCOUNT_ID_HERE.*/AccountID ${MAXMIND_ACCOUNT_ID}/" /etc/GeoIP.conf
-#sudo sed -i "s/^LicenseKey YOUR_LICENSE_KEY_HERE.*/LicenseKey ${MAXMIND_LICENSE_KEY}/" /etc/GeoIP.conf
-
-# add a cron job to update the geoip dbs regularily
-# write out current crontab
-# shellcheck disable=SC2024 # we want to run crontab for sudo
-#sudo crontab -l > tmp_crontab
-#echo new cronjob into cron file
-#echo "46 13 * * 0,4 /usr/bin/geoipupdate" >> tmp_crontab
-#install new cron file
-#sudo crontab tmp_crontab
-#sudo rm tmp_crontab
+#sudo apt install -y default-jre
 
 ################# DEB WAY ###################
 wget https://www.elastic.co/downloads/elasticsearch -O elasticsearch.html
@@ -250,19 +183,10 @@ cd /usr/share/elasticsearch/bin || exit
 #ES_PWD=$( sudo ./elasticsearch-reset-password --auto --batch -u elastic | sed -n "s/New value: \(.*\)/\1/p" )
 # stop elasticsearch again
 sudo systemctl stop elasticsearch.service
-
-# sudo ./elasticsearch-setup-passwords auto
-
-# (Optional) Open a new terminal and verify that you can connect to your Elasticsearch cluster by making an authenticated call. Enter the password for the elastic user when prompted:
-# curl --cacert config/certs/http_ca.crt -u elastic https://localhost:9200
-# enroll kibana using detached mode
-# bin/kibana-setup --enrollment-token <enrollment-token>
-
-#disable the service that started this script
-#sudo systemctl disable secondrun.service
-#echo "BREAK in secondrun.sh, rebooting the system"
-#sleep 2
-#sudo reboot
+# during boot, elasticsearch might need a bit more time to start on the raspberry pi
+sudo sed -i "s/^.*TimeoutStartSec=.*/TimeoutStartSec=180/" /usr/lib/systemd/system/elasticsearch.service
+# sometimes elasticsearch crashes and needs to be restarted
+sudo sed -i "/^.*ExecStart=.*/a Restart=on-failure\nRestartSec=60s" /usr/lib/systemd/system/elasticsearch.service
 
 #copy configs for logstash
 sudo cp /boot/10-suricata.conf /etc/logstash/conf.d/
@@ -279,7 +203,7 @@ sudo sed -i "s/^After=network-online.target.*/Requires=logstash.service\nAfter=l
 # TODO
 # limit also logstash and kibana heap size
 
-# enable the new services
+# reload and enable the new services
 sudo systemctl daemon-reload
 sudo systemctl enable elasticsearch.service
 sudo systemctl enable kibana.service

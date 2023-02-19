@@ -37,7 +37,7 @@ echo "START firstrun.sh"
 #----------------------- START OF CONFIGURATION --------------------------------
 #-------------------------------------------------------------------------------
 
-# home net for suricata configuration
+# home net for suricata configuration, defaults to all private IPv4s
 HOME_NET="[192.168.0.0/16,172.16.0.0/12,10.0.0.0/8]" 
 # which hostname do you want to give your raspberry pi?
 HOSTNAME=suricatapi
@@ -134,13 +134,6 @@ XKBVARIANT=$XKBVARIANT
 XKBOPTIONS=$XKBOPTIONS
 KBEOF
 dpkg-reconfigure -f noninteractive keyboard-configuration
-
-if $ENABLE_ENC28J60; then
-  echo "enable enc28j60 overlay"
-  LINE="dtoverlay=enc28j60"
-  FILE="/boot/config.txt"
-  grep -qxF -- "${LINE}" "${FILE}" || echo "${LINE}" >> "${FILE}"
-fi
 
 #clean up
 #echo "removing firstrun.sh from the system"
