@@ -41,7 +41,7 @@ wpa_passphrase "${SSID}" | grep "\spsk" | cut -d '=' -f 2 | (read -r PWD && PWD=
 
 read -erp "Enter HOME_NET to be used by Suricata, separating CIDR blocks with comma (,): " -i "192.168.0.0/16,172.16.0.0/12,10.0.0.0/8" HOME_NET
 HOME_NET="[${HOME_NET}]"
-sed -i "s/^HOME_NET=.*/HOME_NET=${HOME_NET}/" ${FILES_FOR_PI_FOLDER}/firstrun.sh
+sed -i "s|^HOME_NET=.*|HOME_NET=${HOME_NET}|" ${FILES_FOR_PI_FOLDER}/firstrun.sh
 
 USE_LATEST_RASPI_OS=false
 while true; do

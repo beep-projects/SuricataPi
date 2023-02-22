@@ -55,16 +55,11 @@ function waitForApt() {
 #   None
 #######################################
 function waitForInternet() {
-  until nc -zw1 google.com 443 >/dev/null 2>&1;  do
-    #newer Raspberry Pi OS versions do not have nc preinstalled, but wget is still there
-    if wget -q --spider http://google.com; then
-      break # we are online
-    else
-      #we are still offline
-      echo ["$(date +%T)"] waiting for internet access ...
-      sleep 1
-    fi
+  until curl --output /dev/null --silent --head --fail http://www.google.com; do
+    echo ["$(date +%T)"] waiting for internet access ...
+    sleep 1
   done
+  echo "done"
 }
 
 # redirect output to 'secondrun.log':
@@ -214,7 +209,13 @@ sudo systemctl start elasticsearch.service
 sudo systemctl start logstash.service
 sudo systemctl start kibana.service
 
-curl -X POST https://127.0.0.0:5601/api/kibana/dashboards/import?overwrite=true -H 'kbn-xsrf: true' -H 'Content-Type: application/json' --form file=@/boot/SuricataPi.ndjson
+#wait until all services really have started up
+until curl --output /dev/null --silent --head --fail http://127.0.0.0:5601; do
+  echo ["$(date +%T)"] waiting for kibana to be available ...
+  sleep 1
+done
+# import the SuricataPi dashboards and related objects
+curl -X POST http://127.0.0.0:5601/api/saved_objects/_import -H 'kbn-xsrf: true' --form file=@/boot/SuricataPi.ndjson
 
 echo "remove autoinstalled packages" 
 waitForApt

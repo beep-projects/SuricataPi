@@ -73,7 +73,7 @@ echo "=============================================================="
 echo 
 
 echo "please make sure that your SD card is inserted to this computer"
-echo "press any key to continue ..."
+echo "press any key, when you are ready to continue ..."
 read -rn 1 -s
 echo
 
@@ -192,7 +192,7 @@ done
 echo
 
 echo "SD card used for the following operations is located at: ${SD_CARD_PATH}"
-echo "press any key to continue..."
+echo "If this is correct, press any key to continue ..."
 read -rn 1 -s
 echo
 
@@ -248,20 +248,15 @@ echo "cp -r ${FILES_FOR_PI_FOLDER}/* ${RPI_PATH}"
 cp -r ${FILES_FOR_PI_FOLDER}/* "${RPI_PATH}"
 echo
 
-#echo "press any key to continue..."
-#read -rn 1 -s
-#echo
-
-#echo 
-#echo "=============================================================="
-#echo " enable hdmi_force_hotplug"
-#echo "=============================================================="
-#echo 
+echo 
+echo "=============================================================="
+echo " enable hdmi_force_hotplug"
+echo "=============================================================="
+echo 
 # enable hdmi_force_hotplug in the Rapberry Pi config.txt
 # this is quite helpful if you want to connect a display for some reason to a running suricatapi. E.g. for debugging problems
-#echo "sed -i \"/hdmi_force_hotplug=/c\hdmi_force_hotplug=1\" \"${RPI_PATH}/config.txt\""
-
-#sed -i "/hdmi_force_hotplug=/c\hdmi_force_hotplug=1" "${RPI_PATH}/config.txt"
+echo "sed -i \"/hdmi_force_hotplug=/c\hdmi_force_hotplug=1\" \"${RPI_PATH}/config.txt\""
+sed -i "/hdmi_force_hotplug=/c\hdmi_force_hotplug=1" "${RPI_PATH}/config.txt"
 
 echo 
 echo "=============================================================="
@@ -272,23 +267,14 @@ echo
 echo "unmount SD card"
 sudo umount "${RPI_PATH}"
 
-echo 
-echo "=============================================================="
-echo " setup telegram bot!"
-echo "=============================================================="
-echo 
-
-echo "BEFORE you continue, send any message to your telegram bot!"
-echo "Then press any key to continue..."
-read -rn 1 -s
 echo
 echo "All work is done. Please insert the SD card into your raspberry pi"
-echo "NOTE: when starting up, your raspberry pi should reboot 4 times until all setup work is finished and condocam.ai is up and running. Be patient!"
+echo "NOTE: when starting up, your raspberry pi should reboot 4 times until all setup work is finished and SuricataPi  is up and running. Be patient!"
 
 echo
 echo "///////////////////////////////////////////////////////////////"
 echo
-echo "               ssh ${RPI_USER_NAME}@${RPI_HOST_NAME}.local"
+echo "               ssh ${RPI_USER_NAME}@${RPI_HOST_NAME}"
 echo "               http://${RPI_HOST_NAME}:5601/"
 echo "               tail -f /boot/secondrun.log"
 echo
