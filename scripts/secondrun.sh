@@ -209,14 +209,23 @@ sudo systemctl start elasticsearch.service
 sudo systemctl start logstash.service
 sudo systemctl start kibana.service
 
-#wait until all services really have started up
-until curl --output /dev/null --silent --head --fail http://127.0.0.0:5601; do
+# wait until kibana has started up
+until curl --output /dev/null --silent --head --fail http://127.0.0.0:5601/api/saved_objects/; do
   echo ["$(date +%T)"] waiting for kibana to be available ...
-  sleep 1
+  sleep 10
 done
+echo ["$(date +%T)"] kibana is available
+sleep 30
 # import the SuricataPi dashboards and related objects
-curl -X POST http://127.0.0.0:5601/api/saved_objects/_import -H 'kbn-xsrf: true' --form file=@/boot/SuricataPi.ndjson
-
+# kibana starts in a degraded state, so it takes some time until the import is successful
+RETRY_COUNT=0
+while [ $RETRY_COUNT -le 10 ] ; do
+  SUCCESS=$( curl --silent -X POST http://127.0.0.0:5601/api/saved_objects/_import?overwrite=true -H 'kbn-xsrf: true' --form file=@/boot/SuricataPi.ndjson | grep -Po '(?<="success":)\w+?[^,]*' )
+  [ ${SUCCESS} != "true" ] || break
+  RETRY_COUNT=$(( $RETRY_COUNT + 1 ))
+  echo ["$(date +%T)"] waiting for kibana to accept the import of saved objects ...
+  sleep 10
+done
 echo "remove autoinstalled packages" 
 waitForApt
 echo "sudo apt -y autoremove"
