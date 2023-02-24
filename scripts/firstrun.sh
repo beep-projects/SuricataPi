@@ -69,7 +69,7 @@ XKBOPTIONS=""
 #copy the USERNAME into secondrun.sh 
 sed -i "s/^USERNAME=.*/USERNAME=${USERNAME}/" /boot/secondrun.sh
 #copy the HOME_NET into secondrun.sh 
-sed -i "s/^HOME_NET=.*/HOME_NET=${HOME_NET}/" /boot/secondrun.sh
+sed -i "s|^HOME_NET=.*|HOME_NET=${HOME_NET}|" /boot/secondrun.sh
 
 CURRENT_HOSTNAME=$( </etc/hostname tr -d " \t\n\r" )
 echo "set hostname to ${HOSTNAME} (was ${CURRENT_HOSTNAME})"

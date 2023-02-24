@@ -111,7 +111,7 @@ sudo rm tmp_crontab
 
 #configure suricata
 #set HOME_NET. Note we use | as delimiter for sed, because HOME_NET has / for subnet notation inside
-sudo sed -i "s|^\([^#]*\)HOME_NET:.*|\1HOME_NET: \"\[${HOME_NET}\]\"|" /etc/suricata/suricata.yaml
+sudo sed -i "s|^\([^#]*\)HOME_NET:.*|\1HOME_NET: \"${HOME_NET}\"|" /etc/suricata/suricata.yaml
 #adjust ring buffer settings for better capture performance
 #sudo sed -i "s|^\([^#]*\)#*use-mmap.*|\1use-mmap: yes|" /etc/suricata/suricata.yaml
 #sudo sed -i "s|^\([^#]*\)#*mmap-locked.*|\1mmap-locked: yes|" /etc/suricata/suricata.yaml
@@ -209,23 +209,32 @@ sudo systemctl start elasticsearch.service
 sudo systemctl start logstash.service
 sudo systemctl start kibana.service
 
+# wait until elasticsearch has fully started up
+until curl --output /dev/null --silent --head --fail http://127.0.0.0:9200; do
+  echo ["$(date +%T)"] waiting for elasticsearch to be available ...
+  sleep 10
+done
+# the index template has to be imported into elasticsearch
+curl --silent -X PUT -H 'Content-Type: application/json' http://127.0.0.0:9200/_index_template/suricatapi-index-template -d@/boot/suricatapi-index-template.json
+
 # wait until kibana has started up
-until curl --output /dev/null --silent --head --fail http://127.0.0.0:5601/api/saved_objects/; do
+until curl --output /dev/null --silent --head --fail http://127.0.0.0:5601/app/home/; do
   echo ["$(date +%T)"] waiting for kibana to be available ...
   sleep 10
 done
 echo ["$(date +%T)"] kibana is available
 sleep 30
-# import the SuricataPi dashboards and related objects
+# import the SuricataPi dashboards and related objects into kibana
 # kibana starts in a degraded state, so it takes some time until the import is successful
 RETRY_COUNT=0
 while [ $RETRY_COUNT -le 10 ] ; do
   SUCCESS=$( curl --silent -X POST http://127.0.0.0:5601/api/saved_objects/_import?overwrite=true -H 'kbn-xsrf: true' --form file=@/boot/SuricataPi.ndjson | grep -Po '(?<="success":)\w+?[^,]*' )
-  [ ${SUCCESS} ${SUCCESS} != "true" ] || break
+  [[ ${SUCCESS} != "true" ]] || break
   RETRY_COUNT=$(( $RETRY_COUNT + 1 ))
   echo ["$(date +%T)"] waiting for kibana to accept the import of saved objects ...
   sleep 10
 done
+
 echo "remove autoinstalled packages" 
 waitForApt
 echo "sudo apt -y autoremove"

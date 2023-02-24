@@ -1,0 +1,19 @@
+{
+    "index_patterns": [
+        "suricatapi-eve-json-stream"
+    ],
+    "template": {
+        "mappings": {
+            "properties": {
+                "geoip.location": {
+                    "type": "geo_point"
+                }
+            }
+        }
+    },
+    "composed_of": [],
+    "data_stream": {
+        "hidden": false,
+        "allow_custom_routing": false
+    }
+}

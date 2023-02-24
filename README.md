@@ -1,13 +1,14 @@
-<p align="center"><img src="resources/SuricataPi_Logo_black.png" alt="SuricataPi" style="width:20%;"/>
+<center><img src="resources/SuricataPi_Logo_black.png" alt="SuricataPi" style="width:20%;"/>
 
 [![GitHub license](https://img.shields.io/github/license/beep-projects/SuricataPi)](https://github.com/beep-projects/SuricataPi/blob/main/LICENSE) [![shellcheck](https://github.com/beep-projects/SuricataPi/actions/workflows/shellcheck.yml/badge.svg)](https://github.com/beep-projects/SuricataPi/actions/workflows/shellcheck.yml) [![GitHub issues](https://img.shields.io/github/issues/beep-projects/SuricataPi)](https://github.com/beep-projects/SuricataPi/issues) [![GitHub forks](https://img.shields.io/github/forks/beep-projects/SuricataPi)](https://github.com/beep-projects/SuricataPi/network) [![GitHub stars](https://img.shields.io/github/stars/beep-projects/SuricataPi)](https://github.com/beep-projects/SuricataPi/stargazers) ![GitHub repo size](https://img.shields.io/github/repo-size/beep-projects/SuricataPi)![visitors](https://visitor-badge.glitch.me/badge?page_id=beep-projects.SuricataPi)
 
-</p>
+</center>
 This projects hosts scripts to setup a Raspberry Pi as intrusion detection system (IDS) for home networks based on [Suricata](https://suricata.io/) and [ELK stack](https://www.elastic.co/what-is/elk-stack). The configured system collects Suricata [eve.json](https://suricata.readthedocs.io/en/latest/output/eve/eve-json-output.html) logs and feeds them into the ELK stack for analysis. This data includes alerts, flows, http, dns, statistics and other log types, which you can easily access to create your own dashboards. This project was inspired by (outdated) projects like [SELKS](https://github.com/StamusNetworks/SELKS) and [sýnesis lite](https://github.com/robcowart/synesis_lite_suricata).
 
 # Contents
 - [Requirements](#requirements)
 - [Setup](#setup)
+- [Directory Structure of this Project](#directory-structure-of-this-project)
 - [Install](#install)
 - [Update](#update)
 - [Dashboards](#dashboards)
@@ -29,6 +30,24 @@ The project is optimized to run on my setup. If you get hold of a Raspberry Pi 4
 In order to give **SuricataPi** access to all the traffic in your home network, you have to run all the traffic though a switch with **port mirroring**, that duplicates all the traffic to the configured **mirror port**. If you want to enable SuricataPi to also monitor the traffic in you home WiFi, you will not be able to use the WiFi router connecting to your ISP, as this usually does not route the traffic to the wired network, where SuricataPi can be connected. You will have to disable the ISP routers WiFi and add an access point to your network which is connected to the switch.
 
 <center><img src="resources/SuricataPi_overview.png" width="1024"></center>
+
+## Directory Structure of this Project
+```
+SuricataPi
+├── getAndConfigureSuricataPi.sh        # script to configure and start the installation
+├── install_suricatapi.sh               # script to download Raspberry Pi OS and configure it as SuricataPi
+├── LICENSE
+├── README.md
+├── resources                           # folder for files used for README.md
+└── scripts                             # folder holding the files that are copied to the Raspberry Pi OS sd card 
+    ├── 10-suricata.conf                # configuration file for logstash
+    ├── cmdline.txt                     # this file controls which file is run at boot of raspberry pi
+    ├── firstrun.sh                     # script to do basic configuration of the raspberry pi
+    ├── secondrun.sh                    # actual setup script of SuricataPi
+    ├── suricatapi-index-template.json  # index template for elasticsearch
+    ├── SuricataPi.ndjson               # kibana objects for dashboards
+    └── thirdrun.sh                     # cleanup script
+```
 
 ## Install
 [(Back to Contents)](#contents)
@@ -78,5 +97,19 @@ If you don't know how to do this, start with reading [Updating and Upgrading Ras
 ## Dashboards
 
 [(Back to Contents)](#contents)
-SuricataPi has some dashboards preloaded into kibana.
+SuricataPi has some dashboards preloaded into Kibana.
 
+**SuricataPi: Overview**
+<img src="resources/SuricataPi_dashboard_overview.png" alt="SuricataPi: Overview" width="100%">
+
+**SuricataPi: Alert Overview**
+<img src="resources/SuricataPi_dashboard_alert_overview.png" alt="SuricataPi: Alert Overview" width="100%">
+
+**SuricataPi: Attacker Overview**
+<img src="resources/SuricataPi_dashboard_attacker_overview.png" alt="SuricataPi: Attacker Overview" width="100%">
+
+**SuricataPi: Alert Log**
+<img src="resources/SuricataPi_dashboard_alert_log.png" alt="SuricataPi: Alert Log" width="100%">
+
+**SuricataPi: Stats**
+<img src="resources/SuricataPi_dashboard_stats.png" alt="SuricataPi: Stats" width="100%">
