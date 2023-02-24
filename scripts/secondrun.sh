@@ -221,7 +221,7 @@ sleep 30
 RETRY_COUNT=0
 while [ $RETRY_COUNT -le 10 ] ; do
   SUCCESS=$( curl --silent -X POST http://127.0.0.0:5601/api/saved_objects/_import?overwrite=true -H 'kbn-xsrf: true' --form file=@/boot/SuricataPi.ndjson | grep -Po '(?<="success":)\w+?[^,]*' )
-  [ ${SUCCESS} != "true" ] || break
+  [ ${SUCCESS} ${SUCCESS} != "true" ] || break
   RETRY_COUNT=$(( $RETRY_COUNT + 1 ))
   echo ["$(date +%T)"] waiting for kibana to accept the import of saved objects ...
   sleep 10

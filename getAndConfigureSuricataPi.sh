@@ -45,7 +45,7 @@ sed -i "s|^HOME_NET=.*|HOME_NET=${HOME_NET}|" ${FILES_FOR_PI_FOLDER}/firstrun.sh
 
 USE_LATEST_RASPI_OS=false
 while true; do
-    read -rp "Do you want to use latset Raspberry Pi OS (y, Y, yes) or use the last tetsted one (n, N, no)?" yn
+    read -rp "Do you want to use latset Raspberry Pi OS (y, Y, yes) or use the last tetsted one (n, N, no)? " yn
     case $yn in
         y | Y | yes | Yes ) USE_LATEST_RASPI_OS=true; break;;
         n | N | no | No ) ;;

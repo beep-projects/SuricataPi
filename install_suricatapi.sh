@@ -22,7 +22,7 @@
 
 
 # this is the last successfully tested Raspberry Pi OS release for this project
-RPI_IMAGE_URL="https://downloads.raspberrypi.org/raspios_lite_arm64/images/raspios_lite_arm64-2022-09-26/2022-09-22-raspios-bullseye-arm64-lite.img.xz"
+RPI_IMAGE_URL="https://downloads.raspberrypi.org/raspios_lite_arm64/images/raspios_lite_arm64-2023-02-22/2023-02-21-raspios-bullseye-arm64-lite.img.xz"
 # If you are willing to fix things, go with the latest release
 USE_LATEST_RASPI_OS=false
 
@@ -191,7 +191,7 @@ mount | grep "${DISKNAME}" | cut -d " " -f 3 | while read -r line ; do
 done
 echo
 
-echo "SD card used for the following operations is located at: ${SD_CARD_PATH}"
+echo "The SD card used for the following operations is located at: ${SD_CARD_PATH}"
 echo "If this is correct, press any key to continue ..."
 read -rn 1 -s
 echo
