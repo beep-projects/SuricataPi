@@ -1,7 +1,7 @@
 # Details
 [Back to README.md](../README.md)
 
-This page shall give you some additional information on the configuration of SuricataPi, and enable you to start doing your own changes. If you have created something new, please [contribute](CONTRIBUTING.md) your changes.
+This page shall give you some additional information on the configuration of SuricataPi, and enable you to start doing your own changes. If you have created something new, please [contribute](../CONTRIBUTING.md) your changes.
 ## Contents
 - [General](#general)
 - [Suricata](#suricata)
@@ -70,4 +70,4 @@ The available elements to build your own dashboards on are
 - ```suricatapi-index-template```, an index template, which maps the geoip.location contained in ```suricatapi-eve-json-stream``` as geo_point, so Kibana can use it
 - ```SuricatPi: Logstash Index```, the data view which finally gives your dashboards access to the data from  ```suricatapi-eve-json-stream```
 
-For starting to create your own dashboards, a good read is [Dashboard and visualizations](https://www.elastic.co/guide/en/kibana/current/dashboard.html). If you have created nice dashboards, please export your work following [Manage saved objects](https://www.elastic.co/guide/en/kibana/current/managing-saved-objects.html) and [contribute](CONTRIBUTING.md).
+For starting to create your own dashboards, a good read is [Dashboard and visualizations](https://www.elastic.co/guide/en/kibana/current/dashboard.html). If you have created nice dashboards, please export your work following [Manage saved objects](https://www.elastic.co/guide/en/kibana/current/managing-saved-objects.html) and [contribute](../CONTRIBUTING.md).
