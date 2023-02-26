@@ -25,20 +25,20 @@ This project was inspired by (outdated) projects like [SELKS](https://github.com
 ## Requirements
 [(Back to Contents)](#contents)
 
-This project is developed for **Raspberry Pi 4**, which are hard to get at the moment. In addition to that, you also need a **network switch** that supports **port mirroring**.
+This project is developed for **Raspberry Pi 4**, which is hard to get at the moment. In addition to that, you also need a **network switch** that supports **port mirroring**.
 The hardware that I used for this project is:
 
 - Raspberry Pi 4 Model B Rev 1.5, 2GB RAM
 - SANDISK Extreme PRO® UHS-I, Micro-SDXC, 32 GB
 - TP-Link TL-SG105E, 5-Port-Gigabit-Unmanaged Pro Switch  
 
-The project is optimized to run on my setup. If you get hold of a **Raspberry Pi 4** with more RAM than 2GB, you should adapt the lines following `# limit elasticsearch heap size` in [secondrun.sh](scripts/secondrun.sh) to increase the heap size for elastic search. `htop` shows that 2GB are actually not enough for **SuricataPi**, but with some swapping the system runs fine.
+Currently, the project is optimized to run on my setup, but I will happily optimize it, to run also fine on other systems. If you get hold of a **Raspberry Pi 4** with more RAM than 2GB, you should adapt the lines following `# limit elasticsearch heap size` in [secondrun.sh](scripts/secondrun.sh) to increase the heap size for elastic search. `htop` shows that 2GB are actually not enough for **SuricataPi**, but with some swapping the system runs fine.
 <center><img src="resources/SuricataPi_htop.png" width="100%"></center>
 
 ## Setup
 [(Back to Contents)](#contents)
 
-In order to give **SuricataPi** access to all the traffic in your home network, you have to run all the traffic though a switch with **port mirroring**, that duplicates all the traffic to the configured **mirror port**. If you want to enable SuricataPi to also monitor the traffic in you home WiFi, you will not be able to use the WiFi router connecting to your ISP, as this usually does not route the traffic to the wired network, where SuricataPi can be connected. You will have to disable the ISP routers WiFi and add an access point to your network which is connected to the switch.
+In order to give **SuricataPi** access to all the traffic in your home network, you have to run all the traffic though a switch with **port mirroring**, that duplicates all the traffic to the configured **mirror port**. If you want to enable **SuricataPi** to also monitor the traffic in you home WiFi, you will not be able to use the WiFi router connecting to your ISP, as this usually does not route the traffic to the wired network, where **SuricataPi** can be connected. You will have to disable the ISP routers WiFi and add an access point to your network which is connected to the switch.
 
 <div align="center" style="background-color:white; padding:10px"><img src="resources/SuricataPi_overview.png" width="100%"></div>
 
@@ -66,12 +66,12 @@ SuricataPi
 ## Install
 [(Back to Contents)](#contents)
 
-For installation on **Windows**, I will only give support on specific request. If you read through [install_suricatapi.sh](install_suricatapi.sh) you should be able to identify the needed steps. If you can't do this, I doubt that SuricataPi will be of any use for you. Sorry!  
+For installation on **Windows**, I will only give support on specific request. If you read through [install_suricatapi.sh](install_suricatapi.sh) you should be able to identify the needed steps. If you can't do this, I doubt that **SuricataPi** will be of any use for you. Sorry!  
 
 For installation on **Linux** I provide a script that downloads Raspberry Pi OS and flashes it onto a Micro SD card. The script was mainly written out of curiosity to see how that could work. So it has no added sanity checks and you should use it with care. Check each step, when asked to confirm.  
 On Linux you can do the following steps
 
-1. Insert the Micro SD card that you want to get prepared as SuricataPi into your notebook/PC/whatever
+1. Insert the Micro SD card that you want to get prepared as **SuricataPi** into your notebook/PC/whatever
 
 2. Run the following commands in your shell
    ```bash
@@ -99,12 +99,12 @@ The next steps in these instructions assume that your user is ```beep``` with pa
 
 8. **SuricataPi** only provides some basic configuration for Suricata and the ELK stack, if you want to start to adjust the setup to your needs, you should take a look at the [details.md](resources/details.md).
 
-9. For simplicity and because SuricataPi is intended to be run in a home network as single node, all security features are disabled; especially encryption and TLS. If you want to use your SuricataPi in a non trusted environment, you should reenable these features. See [Set up minimal security for Elasticsearch](https://www.elastic.co/guide/en/elasticsearch/reference/current/security-minimal-setup.html).
-   You also should change the password for the built-in superuser. Elasticsearch prints this during the installation process, so it ends up in ```/boot/secondrun.log```. You can obtain it from there by running ```sed -n 's/^.*generated password.* : \(.*\)/\1/p' /boot/secondrun.log``` on the SuricataPi console. You should change this password asap and remove the logfile, if you wanto to increase security of your installation. 
+9. For simplicity and because **SuricataPi** is intended to be run in a home network as single node, all security features are disabled; especially encryption and TLS. If you want to use your **SuricataPi** in a non trusted environment, you should reenable these features. See [Set up minimal security for Elasticsearch](https://www.elastic.co/guide/en/elasticsearch/reference/current/security-minimal-setup.html).
+   You also should change the password for the built-in superuser. Elasticsearch prints this during the installation process, so it ends up in ```/boot/secondrun.log```. You can obtain it from there by running ```sed -n 's/^.*generated password.* : \(.*\)/\1/p' /boot/secondrun.log``` on the **SuricataPi** console. You should change this password asap and remove the logfile, if you wanto to increase security of your installation. 
 
 ## Update
 [(Back to Contents)](#contents)
-SuricataPi is only setting up the system, from that time on you are the maintainer of the system and should keep it up to date.
+**SuricataPi** is only setting up the system, from that time on you are the maintainer of the system and should keep it up to date.
 
 If you don't know how to do this, start with reading [Updating and Upgrading Raspberry Pi OS](https://www.raspberrypi.com/documentation/computers/os.html#updating-and-upgrading-raspberry-pi-os).
 
