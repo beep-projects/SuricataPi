@@ -117,7 +117,7 @@ sudo sed -i "s|^\([^#]*\)HOME_NET:.*|\1HOME_NET: \"${HOME_NET}\"|" /etc/suricata
 #sudo sed -i "s|^\([^#]*\)#*mmap-locked.*|\1mmap-locked: yes|" /etc/suricata/suricata.yaml
 sudo sed -i "s|^\([^#]*\)#*ring-size.*|\1ring-size: 2048|" /etc/suricata/suricata.yaml
 
-#set the default-rule-path to /var/lib/suricata/rules/suricata.rules
+# set the default-rule-path to /var/lib/suricata/rules/suricata.rules
 sudo sed -i "s|^default-rule-path:.*|default-rule-path: /var/lib/suricata/rules/|" /etc/suricata/suricata.yaml
 
 #now enable some free sources, you can get a list of all available free sources with
@@ -134,24 +134,21 @@ sudo suricata-update enable-source etnetera/aggressive
 # to save space, rotate suricata logs daily and keep only one copy
 sudo sed -i "s/^\(.*\)rotate .*/\1rotate 1\n\1daily/g" /etc/logrotate.d/suricata
 
-#start suricata
+# start suricata
 sudo systemctl start suricata.service
 
 # Setup ELK stack
-# first install java
-#sudo apt install -y default-jre
-
 ################# DEB WAY ###################
 wget https://www.elastic.co/downloads/elasticsearch -O elasticsearch.html
 
 ELK_VERSION=$( sed -n 's/^.*Version: <\/strong>\([^<]*\).*$/\1/p' elasticsearch.html )
 ELK_REPO_VERSION=$( echo "${ELK_VERSION}" | grep -o "^[^\.]" )
-#Download and install the public signing key
+# Download and install the public signing key
 wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo gpg --dearmor -o /usr/share/keyrings/elasticsearch-keyring.gpg
-#install the apt-transport-https
+# install apt-transport-https
 waitForApt
 sudo apt install apt-transport-https
-#add the ELK repo to apt
+# add the ELK repo to apt
 echo "deb [signed-by=/usr/share/keyrings/elasticsearch-keyring.gpg] https://artifacts.elastic.co/packages/${ELK_REPO_VERSION}.x/apt stable main" | sudo tee "/etc/apt/sources.list.d/elastic-${ELK_REPO_VERSION}.x.list"
 waitForApt
 sudo apt update
@@ -167,9 +164,9 @@ sudo sed -i "s/\(# For more information, consult the discovery and cluster forma
 sudo sed -i "/^[^#]*cluster.initial_master_nodes:/s/^/#/g" /etc/elasticsearch/elasticsearch.yml
 # disable security features for elasticsearch
 sudo sed -i "s/^xpack.security.enabled:.*/xpack.security.enabled: false/g" /etc/elasticsearch/elasticsearch.yml
-sudo sed -i "s/^xpack.security.enrollment.enabled:.*/xpack.security.enrollment.enabled: false/g" /etc/elasticsearch/elasticsearch.yml
-sudo sed -i '/^.*xpack.security.http.ssl.*/{:a;n;/^.*enabled: .*/!ba;s#^.*enabled:.*#  enabled: true#}' /etc/elasticsearch/elasticsearch.yml
-sudo sed -i '/^.*xpack.security.transport.ssl.*/{:a;n;/^.*enabled: .*/!ba;s#^.*enabled:.*#  enabled: true#}' /etc/elasticsearch/elasticsearch.yml
+#sudo sed -i "s/^xpack.security.enrollment.enabled:.*/xpack.security.enrollment.enabled: false/g" /etc/elasticsearch/elasticsearch.yml
+#sudo sed -i '/^.*xpack.security.http.ssl.*/{:a;n;/^.*enabled: .*/!ba;s#^.*enabled:.*#  enabled: false#}' /etc/elasticsearch/elasticsearch.yml
+#sudo sed -i '/^.*xpack.security.transport.ssl.*/{:a;n;/^.*enabled: .*/!ba;s#^.*enabled:.*#  enabled: false#}' /etc/elasticsearch/elasticsearch.yml
 
 # start elasticsearch
 sudo systemctl start elasticsearch.service
@@ -230,7 +227,7 @@ RETRY_COUNT=0
 while [ $RETRY_COUNT -le 10 ] ; do
   SUCCESS=$( curl --silent -X POST http://127.0.0.0:5601/api/saved_objects/_import?overwrite=true -H 'kbn-xsrf: true' --form file=@/boot/SuricataPi.ndjson | grep -Po '(?<="success":)\w+?[^,]*' )
   [[ ${SUCCESS} != "true" ]] || break
-  RETRY_COUNT=$(( $RETRY_COUNT + 1 ))
+  RETRY_COUNT=$(( RETRY_COUNT + 1 ))
   echo ["$(date +%T)"] waiting for kibana to accept the import of saved objects ...
   sleep 10
 done
