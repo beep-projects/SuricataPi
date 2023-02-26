@@ -115,7 +115,7 @@ sudo sed -i "s|^\([^#]*\)HOME_NET:.*|\1HOME_NET: \"${HOME_NET}\"|" /etc/suricata
 #adjust ring buffer settings for better capture performance
 #sudo sed -i "s|^\([^#]*\)#*use-mmap.*|\1use-mmap: yes|" /etc/suricata/suricata.yaml
 #sudo sed -i "s|^\([^#]*\)#*mmap-locked.*|\1mmap-locked: yes|" /etc/suricata/suricata.yaml
-sudo sed -i "s|^\([^#]*\)#*ring-size.*|\1ring-size: 2048|" /etc/suricata/suricata.yaml
+sudo sed -i "s|^\([^#]*\)#*ring-size.*|\1ring-size: 30000|" /etc/suricata/suricata.yaml
 
 # set the default-rule-path to /var/lib/suricata/rules/suricata.rules
 sudo sed -i "s|^default-rule-path:.*|default-rule-path: /var/lib/suricata/rules/|" /etc/suricata/suricata.yaml

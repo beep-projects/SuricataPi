@@ -1,13 +1,13 @@
 <div align="center">
-<img src="resources/SuricataPi_Logo_black.png" alt="SuricataPi" style="width:20%;"/>
+<img src="resources/SuricataPi_Banner.png" alt="SuricataPi" style="width:100%;"/>
 
 [![GitHub license](https://img.shields.io/github/license/beep-projects/SuricataPi)](https://github.com/beep-projects/SuricataPi/blob/main/LICENSE) [![shellcheck](https://github.com/beep-projects/SuricataPi/actions/workflows/shellcheck.yml/badge.svg)](https://github.com/beep-projects/SuricataPi/actions/workflows/shellcheck.yml) [![GitHub issues](https://img.shields.io/github/issues/beep-projects/SuricataPi)](https://github.com/beep-projects/SuricataPi/issues) [![GitHub forks](https://img.shields.io/github/forks/beep-projects/SuricataPi)](https://github.com/beep-projects/SuricataPi/network) [![GitHub stars](https://img.shields.io/github/stars/beep-projects/SuricataPi)](https://github.com/beep-projects/SuricataPi/stargazers) ![GitHub repo size](https://img.shields.io/github/repo-size/beep-projects/SuricataPi)![visitors](https://visitor-badge.glitch.me/badge?page_id=beep-projects.SuricataPi)
 
 </div>
 
-**SuricataPi** hosts scripts to setup a Raspberry Pi as intrusion detection system (IDS) for home networks based on [Suricata](https://suricata.io/) and [ELK stack](https://www.elastic.co/what-is/elk-stack). The configured system collects Suricata [eve.json](https://suricata.readthedocs.io/en/latest/output/eve/eve-json-output.html) logs and feeds them into the ELK stack for analysis. The available data includes alerts, flows, http, dns, statistics and other log types, which you can easily access to create your own dashboards.
+**SuricataPi** hosts scripts to setup a Raspberry Pi as **intrusion detection system** (IDS) for **home networks** based on [Suricata](https://suricata.io/) and [ELK stack](https://www.elastic.co/what-is/elk-stack). The configured system collects **Suricata** [eve.json](https://suricata.readthedocs.io/en/latest/output/eve/eve-json-output.html) logs and feeds them into the **ELK stack** for analysis. The available data includes alerts, flows, http, dns, statistics and other log types, which you can easily access to create your own dashboards.
 
-The basic configuration of this project can be done in 5 minutes, while the automated setup might take between 20 and 60 minutes. The used tools get frequent updates, which might break the scripts, so please keep in mind that this project might need some more work on your side. If you run into issues with the scripts, check the [open issues](https://github.com/beep-projects/SuricataPi/issues/) and open a new issue if your problem is not already listed.
+The basic configuration of this project can be done in 5 minutes, while the automated setup might take between 20 and 60 minutes. The used tools get frequent updates, which might break our scripts. Therefore, please keep in mind that this project might need some more work on your side. If you run into issues with the scripts, check the [open issues](https://github.com/beep-projects/SuricataPi/issues/) and open a new issue if your problem is not already listed.
 
 This project was inspired by (outdated) projects like [SELKS](https://github.com/StamusNetworks/SELKS) and [sýnesis lite](https://github.com/robcowart/synesis_lite_suricata).
 
@@ -19,18 +19,20 @@ This project was inspired by (outdated) projects like [SELKS](https://github.com
 - [Install](#install)
 - [Update](#update)
 - [Dashboard Gallery](#dashboard-gallery)
+- [Details](resources/details.md)
+- [Contribute](CONTRIBUTING.md)
 
 ## Requirements
 [(Back to Contents)](#contents)
 
-This project is developed for **Raspberry Pi 4**. In addition to the pi, you also need a network switch that supports **port mirroring**.
+This project is developed for **Raspberry Pi 4**, which are hard to get at the moment. In addition to that, you also need a **network switch** that supports **port mirroring**.
 The hardware that I used for this project is:
 
 - Raspberry Pi 4 Model B Rev 1.5, 2GB RAM
 - SANDISK Extreme PRO® UHS-I, Micro-SDXC, 32 GB
 - TP-Link TL-SG105E, 5-Port-Gigabit-Unmanaged Pro Switch  
 
-The project is optimized to run on my setup. If you get hold of a Raspberry Pi 4 with more RAM than 2GB, you should adjust the lines following `# limit elasticsearch heap size` in [secondrun.sh](scripts/secondrun.sh) to increase the heap size for elastic search. `htop` shows that 2GB are actually not enough for **SuricataPi**, but with some swapping the system runs fine.
+The project is optimized to run on my setup. If you get hold of a **Raspberry Pi 4** with more RAM than 2GB, you should adapt the lines following `# limit elasticsearch heap size` in [secondrun.sh](scripts/secondrun.sh) to increase the heap size for elastic search. `htop` shows that 2GB are actually not enough for **SuricataPi**, but with some swapping the system runs fine.
 <center><img src="resources/SuricataPi_htop.png" width="100%"></center>
 
 ## Setup
@@ -38,25 +40,27 @@ The project is optimized to run on my setup. If you get hold of a Raspberry Pi 4
 
 In order to give **SuricataPi** access to all the traffic in your home network, you have to run all the traffic though a switch with **port mirroring**, that duplicates all the traffic to the configured **mirror port**. If you want to enable SuricataPi to also monitor the traffic in you home WiFi, you will not be able to use the WiFi router connecting to your ISP, as this usually does not route the traffic to the wired network, where SuricataPi can be connected. You will have to disable the ISP routers WiFi and add an access point to your network which is connected to the switch.
 
-<center><img src="resources/SuricataPi_overview.png" width="100%"></center>
+<div align="center" style="background-color:white; padding:10px"><img src="resources/SuricataPi_overview.png" width="100%"></div>
 
 ## Directory Structure of this Project
 [(Back to Contents)](#contents)
 ```
 SuricataPi
-├── getAndConfigureSuricataPi.sh        # script to configure and start the installation
-├── install_suricatapi.sh               # script to download Raspberry Pi OS and configure it as SuricataPi
-├── LICENSE
-├── README.md
+├── .github/workflows                   # actions for verifying/testing commits
 ├── resources                           # folder for files used for README.md
 └── scripts                             # folder holding the files that are copied to the Raspberry Pi OS sd card 
     ├── 10-suricata.conf                # configuration file for logstash
     ├── cmdline.txt                     # this file controls which file is run at boot of raspberry pi
     ├── firstrun.sh                     # script to do basic configuration of the raspberry pi
     ├── secondrun.sh                    # actual setup script of SuricataPi
-    ├── suricatapi-index-template.json  # index template for elasticsearch
-    ├── SuricataPi.ndjson               # kibana objects for dashboards
+    ├── suricatapi-index-template.json  # index template for Elasticsearch
+    ├── SuricataPi.ndjson               # Kibana objects for dashboards
     └── thirdrun.sh                     # cleanup script
+├── CONTRIBUTING.md
+├── LICENSE
+├── README.md
+├── getAndConfigureSuricataPi.sh        # script to configure and start the installation
+└── install_suricatapi.sh               # script to download Raspberry Pi OS and configure it as SuricataPi
 ```
 
 ## Install
@@ -75,7 +79,7 @@ On Linux you can do the following steps
    chmod 755 getAndConfigureSuricataPi.sh
    ./getAndConfigureSuricataPi.sh
    ```
-   The next steps assume that your user is ```beep``` with password ```projects``` and the configured hostname is ```suricatapi```
+The next steps in these instructions assume that your user is ```beep``` with password ```projects``` and the configured hostname is ```suricatapi```. If you use different values, don't do plain copy & paste.
 
 3. Eject the Micro SD card and insert it into your Raspberry Pi
 
@@ -106,7 +110,7 @@ If you don't know how to do this, start with reading [Updating and Upgrading Ras
 
 ## Dashboard Gallery
 [(Back to Contents)](#contents)
-SuricataPi has some dashboards preloaded into Kibana.
+SuricataPi has some dashboards preloaded into **Kibana**.
 
 **SuricataPi: Overview**
 <img src="resources/SuricataPi_dashboard_overview.png" alt="SuricataPi: Overview" width="100%">

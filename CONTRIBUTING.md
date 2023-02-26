@@ -1,8 +1,7 @@
 # How to contribute to SuricataPi
+[Back to README.md](README.md)
 
-[Back to README.md](../README.md)
-
-I'm really glad you're reading this, because I welcome every volunteer to improve this project. This page shall give you some information on how you can contribute. If you do not find the needed information on this page, it is always a good idea to [open a new discussion](https://github.com/beep-projects/SuricataPi/discussions/new/choose) for this topic.
+I'm really glad you're reading this, because I welcome every volunteer to improve this project. This page shall help you to get the needed information on how you can contribute. If you do not find the needed information on this page, it is always a good idea to [open a new discussion](https://github.com/beep-projects/SuricataPi/discussions/new/choose) for that topic.
 ## Contents
 - [Did you find a bug?](#did-you-find-a-bug)
 - [Did you write a patch that fixes a bug?](#did-you-write-a-patch-that-fixes-a-bug)
