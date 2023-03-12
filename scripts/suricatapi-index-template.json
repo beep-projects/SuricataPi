@@ -3,6 +3,20 @@
         "suricatapi-eve-json-stream"
     ],
     "template": {
+        "settings": {
+          "index": {
+            "lifecycle": {
+              "name": "suricatapi-index-policy"
+            },
+            "routing": {
+              "allocation": {
+                "include": {
+                  "_tier_preference": "data_hot"
+                }
+              }
+            }
+          }
+        },
         "mappings": {
             "properties": {
                 "geoip.location": {

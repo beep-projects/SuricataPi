@@ -97,14 +97,14 @@ The next steps in these instructions assume that your user is ```beep``` with pa
    
 7. Open [http://suricatapi:5601/app/dashboards#/view/376f9900-a274-11ed-a4f0-6112efb73001](http://suricatapi:5601/app/dashboards#/view/376f9900-a274-11ed-a4f0-6112efb73001) in your browser
 
-8. **SuricataPi** only provides some basic configuration for Suricata and the ELK stack, if you want to start to adjust the setup to your needs, you should take a look at the [details.md](resources/details.md).
+8. **SuricataPi** only provides some basic configuration for **Suricata** and the **ELK stack**, if you want to start to adjust the setup to your needs, you should take a look at the [details.md](resources/details.md).
 
-9. For simplicity and because **SuricataPi** is intended to be run in a home network as single node, all security features are disabled; especially encryption and TLS. If you want to use your **SuricataPi** in a non trusted environment, you should reenable these features. See [Set up minimal security for Elasticsearch](https://www.elastic.co/guide/en/elasticsearch/reference/current/security-minimal-setup.html).
-   You also should change the password for the built-in superuser. Elasticsearch prints this during the installation process, so it ends up in ```/boot/secondrun.log```. You can obtain it from there by running ```sed -n 's/^.*generated password.* : \(.*\)/\1/p' /boot/secondrun.log``` on the **SuricataPi** console. You should change this password asap and remove the logfile, if you wanto to increase security of your installation. 
+9. For simplicity and because **SuricataPi** is intended to be run in a **home network** as single node, all security features are disabled; especially encryption and TLS. If you want to use your **SuricataPi** in a non trusted environment, you should reenable these features. See [Set up minimal security for Elasticsearch](https://www.elastic.co/guide/en/elasticsearch/reference/current/security-minimal-setup.html).
+   You also should change the password for the **built-in superuser**. **Elasticsearch** prints this during the installation process, so it ends up in ```/boot/secondrun.log```. You can obtain it from there by running ```sed -n 's/^.*generated password.* : \(.*\)/\1/p' /boot/secondrun.log``` on the **SuricataPi** console. You should change this password asap and remove the logfile, if you want to increase security of your installation. 
 
 ## Update
 [(Back to Contents)](#contents)
-**SuricataPi** is only setting up the system, from that time on you are the maintainer of the system and should keep it up to date.
+**SuricataPi** is only setting up the system, from that time on **you** are the **maintainer** of the system and should keep it up to date.
 
 If you don't know how to do this, start with reading [Updating and Upgrading Raspberry Pi OS](https://www.raspberrypi.com/documentation/computers/os.html#updating-and-upgrading-raspberry-pi-os).
 
