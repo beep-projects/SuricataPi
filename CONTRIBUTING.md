@@ -1,7 +1,11 @@
-# How to contribute to SuricataPi
-[Back to README.md](README.md)
+<div align="center">
+<img src="resources/SuricataPi_Banner.png" alt="SuricataPi" style="width:100%;"/>
+</div>
 
-I'm really glad you're reading this, because I welcome every volunteer to improve this project. This page shall help you to get the needed information on how you can contribute. If you do not find the needed information on this page, it is always a good idea to [open a new discussion](https://github.com/beep-projects/SuricataPi/discussions/new/choose) for that topic.
+# How to contribute to SuricataPi
+<span style="font-weight:normal;font-size:small">\[[Back to README](README.md)\]</span>
+
+Great that you're reading this, because every volunteer is truly welcome to improve this project. This page shall help you to get the needed information on how you can contribute. If you do not find the needed information on this page, just [open a new discussion](https://github.com/beep-projects/SuricataPi/discussions/new/choose) for that topic.
 ## Contents
 - [Did you find a bug?](#did-you-find-a-bug)
 - [Did you write a patch that fixes a bug?](#did-you-write-a-patch-that-fixes-a-bug)
@@ -30,3 +34,4 @@ I'm really glad you're reading this, because I welcome every volunteer to improv
 
 - If you have collected positive feedback in the [Discussions](https://github.com/beep-projects/SuricataPi/discussions) and finished your work, [open a new pull request](https://github.com/beep-projects/SuricataPi/compare) with the patch.
 
+<span style="font-weight:normal;font-size:small">\[[Back to README](README.md)\] \[[Back to top](#how-to-contribute-to-suricatapi)\]</span>
