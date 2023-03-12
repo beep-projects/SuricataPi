@@ -19,7 +19,7 @@ If you want to modify the **SuricataPi**, a good start is to read the standard g
 - Elasticsearch: [Configuring Elasticsearch](https://www.elastic.co/guide/en/elasticsearch/reference/current/settings.html)
 - Kibana: [Kibana Dashboard](https://www.elastic.co/kibana/kibana-dashboard)
 
-<center><img src="SuricataPi_overview.png" width="100%"></center>
+<div align="center" style="background-color:white; padding:10px"><img src="SuricataPi_overview.png" width="100%"></div>
 
 ## Suricata
 <sup>\[[Back to Contents](#contents)\]<sup>
