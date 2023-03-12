@@ -23,7 +23,7 @@ This project was inspired by (outdated) projects like [SELKS](https://github.com
 - [Contribute](CONTRIBUTING.md)
 
 ## Requirements
-<span style="font-weight:normal;font-size:small">\[[Back to Contents](#contents)\]</span>
+<sup>\[[Back to Contents](#contents)\]</sup>
 
 This project is developed for **Raspberry Pi 4**, which is hard to get at the moment. In addition to that, you also need a **network switch** that supports **port mirroring**.
 The hardware that I used for this project is:
@@ -39,14 +39,14 @@ If you get hold of a **Raspberry Pi 4** with more RAM than 2GB, you should adapt
 <center><img src="resources/SuricataPi_htop.png" width="100%"></center>
 
 ## Setup
-<span style="font-weight:normal;font-size:small">\[[Back to Contents](#contents)\]</span>
+<sup>\[[Back to Contents](#contents)\]</sup>
 
 In order to give **SuricataPi** access to all the traffic in your home network, you have to run all the traffic though a switch with **port mirroring**, that duplicates all the traffic to the configured **mirror port**. If you want to enable **SuricataPi** to also monitor the traffic in you home WiFi, you will not be able to use the WiFi router connecting to your ISP, as this usually does not route the traffic to the wired network, where **SuricataPi** can be connected. You will have to disable the ISP routers WiFi and add an access point to your network which is connected to the switch.
 
 <div align="center" style="background-color:white; padding:10px"><img src="resources/SuricataPi_overview.png" width="100%"></div>
 
 ## Directory Structure of this Project
-<span style="font-weight:normal;font-size:small">\[[Back to Contents](#contents)\]</span>
+<sup>\[[Back to Contents](#contents)\]</sup>
 ```
 SuricataPi
 ├── .github/workflows                   # actions for verifying/testing commits
@@ -68,7 +68,7 @@ SuricataPi
 ```
 
 ## Install
-<span style="font-weight:normal;font-size:small">\[[Back to Contents](#contents)\]</span>
+<sup>\[[Back to Contents](#contents)\]</sup>
 
 For installation on **Windows**, I will only give support on specific request. If you read through [install_suricatapi.sh](install_suricatapi.sh) you should be able to identify the needed steps. If you can't do this, I doubt that **SuricataPi** will be of any use for you. Sorry!  
 
@@ -107,14 +107,14 @@ The next steps in these instructions assume that your user is ```beep``` with pa
    You also should change the password for the **built-in superuser**. **Elasticsearch** prints this during the installation process, so it ends up in ```/boot/secondrun.log```. You can obtain it from there by running ```sed -n 's/^.*generated password.* : \(.*\)/\1/p' /boot/secondrun.log``` on the **SuricataPi** console. You should change this password asap and remove the logfile, if you want to increase security of your installation. 
 
 ## Update
-<span style="font-weight:normal;font-size:small">\[[Back to Contents](#contents)\]</span>
+<sup>\[[Back to Contents](#contents)\]</sup>
 
 **SuricataPi** is only setting up the system, from that time on **you** are the **maintainer** of the system and should keep it up to date.
 
 If you don't know how to do this, start with reading [Updating and Upgrading Raspberry Pi OS](https://www.raspberrypi.com/documentation/computers/os.html#updating-and-upgrading-raspberry-pi-os).
 
 ## Dashboard Gallery
-<span style="font-weight:normal;font-size:small">\[[Back to Contents](#contents)\]</span>
+<sup>\[[Back to Contents](#contents)\]</sup>
 
 SuricataPi has some dashboards preloaded into **Kibana**.
 

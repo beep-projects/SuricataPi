@@ -88,7 +88,7 @@ The available elements to build your own dashboards on are
 - ```suricatapi-eve-json-stream```, the **data stream** which receives the ```eve.json``` data from **Logstash**
 - ```suricatapi-index-template```, an **index template**, which maps the geoip.location contained in ```suricatapi-eve-json-stream``` as geo_point, so **Kibana** can use it
 - ```suricatapi-index-policy```, an **index lifecycle policy**, which manages the lifecycle of the ```suricatapi-eve-json-stream``` data stream. By default it is configured to create every day a new backing index and to delete a backing index if it is older than 14 days
-- ```SuricatPi: Logstash Index```, the **data view** which finally gives your dashboards access to the data from  ```suricatapi-eve-json-stream```
+- ```suricatapi-data-view```, the **data view** which finally gives your dashboards access to the data from  ```suricatapi-eve-json-stream```
 
 For starting to create your own dashboards, a good read is [Dashboard and visualizations](https://www.elastic.co/guide/en/kibana/current/dashboard.html). If you have created nice dashboards, please export your work following [Manage saved objects](https://www.elastic.co/guide/en/kibana/current/managing-saved-objects.html) and [contribute](../CONTRIBUTING.md) them to **SuricataPi**.
 
