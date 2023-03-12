@@ -43,15 +43,16 @@ read -erp "Enter HOME_NET to be used by Suricata, separating CIDR blocks with co
 HOME_NET="[${HOME_NET}]"
 sed -i "s|^HOME_NET=.*|HOME_NET=${HOME_NET}|" ${FILES_FOR_PI_FOLDER}/firstrun.sh
 
-USE_LATEST_RASPI_OS=false
+USE_LATEST=false
 while true; do
-    read -rp "Do you want to use latset Raspberry Pi OS (y, Y, yes) or use the last tetsted one (n, N, no)? " yn
+    read -rp "Do you want to use latset Raspberry Pi OS and ELK stack (y, Y, yes) or use the last tested one (n, N, no)? " yn
     case $yn in
-        y | Y | yes | Yes ) USE_LATEST_RASPI_OS=true; break;;
+        y | Y | yes | Yes ) USE_LATEST=true; break;;
         n | N | no | No ) ;;
         * ) echo "Please answer yes or no.";;
     esac
 done
-sed -i "s/^USE_LATEST_RASPI_OS=.*/USE_LATEST_RASPI_OS=${USE_LATEST_RASPI_OS}/" ./install_suricatapi.sh
+sed -i "s/^USE_LATEST_RASPI_OS=.*/USE_LATEST_RASPI_OS=${USE_LATEST}/" ./install_suricatapi.sh
+sed -i "s/^USE_LATEST_ELK=.*/USE_LATEST_ELK=${USE_LATEST}/" ./firstrun.sh
 
 ./install_suricatapi.sh

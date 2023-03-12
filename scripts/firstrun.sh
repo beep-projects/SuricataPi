@@ -37,6 +37,8 @@ echo "START firstrun.sh"
 #----------------------- START OF CONFIGURATION --------------------------------
 #-------------------------------------------------------------------------------
 
+# use the last tested ELK stack, or the newest one
+USE_LATEST_ELK=false
 # home net for suricata configuration, defaults to all private IPv4s
 HOME_NET="[192.168.0.0/16,172.16.0.0/12,10.0.0.0/8]" 
 # which hostname do you want to give your raspberry pi?
@@ -65,7 +67,12 @@ XKBOPTIONS=""
 #-------------------------------------------------------------------------------
 #------------------------ END OF CONFIGURATION ---------------------------------
 #-------------------------------------------------------------------------------
+# latest tested ELK stack version
+ELK_REPO_VERSION=8
 
+#copy the USE_LATEST_ELK into secondrun.sh 
+sed -i "s/^USE_LATEST_ELK=.*/USE_LATEST_ELK=${USE_LATEST_ELK}/" /boot/secondrun.sh
+sed -i "s/^ELK_REPO_VERSION=.*/ELK_REPO_VERSION=${ELK_REPO_VERSION}/" /boot/secondrun.sh
 #copy the USERNAME into secondrun.sh 
 sed -i "s/^USERNAME=.*/USERNAME=${USERNAME}/" /boot/secondrun.sh
 #copy the HOME_NET into secondrun.sh 

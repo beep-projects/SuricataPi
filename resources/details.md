@@ -1,3 +1,7 @@
+<div align="center">
+<img src="SuricataPi_Banner.png" alt="SuricataPi" style="width:100%;"/>
+</div>
+
 # Details
 <sup>\[[Back to README.md](../README.md)\]<sup>
 
@@ -70,11 +74,6 @@ and disabling the security features in
 ```bash
 /etc/elasticsearch/elasticsearch.yml
 xpack.security.enabled: false
-#xpack.security.enrollment.enabled: false
-#xpack.security.http.ssl:
-#  enabled: false
-#xpack.security.transport.ssl:
-#  enabled: false
 ```
 If you want to change other settings for Elasticsearch, a good guide can be found here [Configuring Elasticsearch](https://www.elastic.co/guide/en/elasticsearch/reference/current/settings.html).
 On top of Elasticsearch, Kibana is running for delivering the dashboards.
@@ -84,10 +83,10 @@ On top of Elasticsearch, Kibana is running for delivering the dashboards.
 
 For **Kibana**, also the default configuration is good enough for **SuricataPi**. If you want to optimize anything here for whatever reason, see [Configure Kibana](https://www.elastic.co/guide/en/kibana/current/settings.html).
 **SuricataPi** loads preconfigured dashboards into **Kibana**, which you can access via [http://suricatapi:5601/app/dashboards](http://suricatapi:5601/app/dashboards).
-The available elements to build your own dashboards on are
+The available elements to base your own dashboards on are
 - ```suricatapi-eve-json-stream```, the **data stream** which receives the ```eve.json``` data from **Logstash**
 - ```suricatapi-index-template```, an **index template**, which maps the geoip.location contained in ```suricatapi-eve-json-stream``` as geo_point, so **Kibana** can use it
-- ```suricatapi-index-policy```, an **index lifecycle policy**, which manages the lifecycle of the ```suricatapi-eve-json-stream``` data stream. By default it is configured to create every day a new backing index and to delete a backing index if it is older than 14 days
+- ```suricatapi-index-policy```, an **index lifecycle policy**, which manages the lifecycle of the ```suricatapi-eve-json-stream``` data stream. It is configured to rollover every day to a new backing index and to delete any backing index if it is older than 14 days
 - ```suricatapi-data-view```, the **data view** which finally gives your dashboards access to the data from  ```suricatapi-eve-json-stream```
 
 For starting to create your own dashboards, a good read is [Dashboard and visualizations](https://www.elastic.co/guide/en/kibana/current/dashboard.html). If you have created nice dashboards, please export your work following [Manage saved objects](https://www.elastic.co/guide/en/kibana/current/managing-saved-objects.html) and [contribute](../CONTRIBUTING.md) them to **SuricataPi**.

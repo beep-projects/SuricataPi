@@ -70,6 +70,8 @@ exec 1>/boot/secondrun.log 2>&1
 echo "START secondrun.sh"
 # the following variables should be set by firstrun.sh
 HOME_NET=COPY_HOME_NET_HERE
+USE_LATEST_ELK=COPY_USE_LATEST_ELK_HERE
+ELK_REPO_VERSION=COPY_ELK_REPO_VERSION_HERE
 
 # update the system and install needed packages
 echo "updating the system"
@@ -139,10 +141,11 @@ sudo systemctl start suricata.service
 
 # Setup ELK stack
 ################# DEB WAY ###################
-wget https://www.elastic.co/downloads/elasticsearch -O elasticsearch.html
-
-ELK_VERSION=$( sed -n 's/^.*Version: <\/strong>\([^<]*\).*$/\1/p' elasticsearch.html )
-ELK_REPO_VERSION=$( echo "${ELK_VERSION}" | grep -o "^[^\.]" )
+if [[ ${USE_LATEST_ELK} == true ]] ; then
+  wget https://www.elastic.co/downloads/elasticsearch -O elasticsearch.html
+  ELK_VERSION=$( sed -n 's/^.*Version: <\/strong>\([^<]*\).*$/\1/p' elasticsearch.html )
+  ELK_REPO_VERSION=$( echo "${ELK_VERSION}" | grep -o "^[^\.]" )
+fi
 # Download and install the public signing key
 wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo gpg --dearmor -o /usr/share/keyrings/elasticsearch-keyring.gpg
 # install apt-transport-https

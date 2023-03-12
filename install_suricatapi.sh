@@ -23,6 +23,10 @@
 
 # this is the last successfully tested Raspberry Pi OS release for this project
 RPI_IMAGE_URL="https://downloads.raspberrypi.org/raspios_lite_arm64/images/raspios_lite_arm64-2023-02-22/2023-02-21-raspios-bullseye-arm64-lite.img.xz"
+ELK_REPO_VERSION=8
+#copy the ELK_REPO_VERSION into firstrun.sh 
+sed -i "s/^ELK_REPO_VERSION=.*/ELK_REPO_VERSION=${ELK_REPO_VERSION}/" /boot/firstrun.sh
+
 # If you are willing to fix things, go with the latest release
 USE_LATEST_RASPI_OS=false
 
