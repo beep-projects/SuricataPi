@@ -211,10 +211,10 @@ until curl --output /dev/null --silent --head --fail http://127.0.0.0:9200; do
   echo ["$(date +%T)"] waiting for elasticsearch to be available ...
   sleep 10
 done
+# the index lifecycle policy has to be imported into elasticsearch
+curl --silent -X PUT -H 'Content-Type: application/json' http://127.0.0.0:9200/_ilm/policy/suricatapi-index-policy -d@/boot/suricatapi-index-policy.json
 # the index template has to be imported into elasticsearch
 curl --silent -X PUT -H 'Content-Type: application/json' http://127.0.0.0:9200/_index_template/suricatapi-index-template -d@/boot/suricatapi-index-template.json
-# the index lifecycle policy has to be imported into elasticsearch
-curl --silent -X PUT -H 'Content-Type: application/json' http://127.0.0.0:9200/_ilm/suricatapi-index-policy -d@/boot/suricatapi-index-policy.json
 
 # wait until kibana has started up
 until curl --output /dev/null --silent --head --fail http://127.0.0.0:5601/app/home/; do
