@@ -48,7 +48,7 @@ while true; do
     read -rp "Do you want to use latset Raspberry Pi OS and ELK stack (y, Y, yes) or use the last tested one (n, N, no)? " yn
     case $yn in
         y | Y | yes | Yes ) USE_LATEST=true; break;;
-        n | N | no | No ) ;;
+        n | N | no | No ) USE_LATEST=false; break;;
         * ) echo "Please answer yes or no.";;
     esac
 done
