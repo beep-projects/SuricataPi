@@ -19,6 +19,7 @@
 # this script is run as root, no need for sudo
 
 echo "START thirdrun.sh"
+echo "This script is running as user: $( whoami )"
 
 #disable service
 systemctl stop secondrun.service
@@ -37,6 +38,5 @@ systemctl reset-failed
 sed -i 's| systemd.run.*||g' /boot/cmdline.txt
 
 echo "DONE thirdrun.sh"
-telegram --success --text "Installation of condocam.ai complete. Have fun!"
 
 exit 0

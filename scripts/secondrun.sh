@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Copyright (c) 2021, The beep-projects contributors
+# Copyright (c) 2021-2024, The beep-projects contributors
 # this file originated from https://github.com/beep-projects
 # Do not remove the lines above.
 # This program is free software: you can redistribute it and/or modify
@@ -59,7 +59,52 @@ function waitForInternet() {
     echo ["$(date +%T)"] waiting for internet access ...
     sleep 1
   done
-  echo "done"
+}
+
+#######################################
+# Print error message.
+# Globals:
+#   None
+# Arguments:
+#   $1 = Error message
+#   $2 = return code (optional, default 1)
+# Outputs:
+#   Prints an error message to stderr
+#######################################
+function error() {
+    printf "%s\n" "${1}" >&2 ## Send message to stderr.
+    exit "${2-1}" ## Return a code specified by $2, or 1 by default.
+}
+
+#######################################
+# Download sources, check integrity and extract
+# Globals:
+#   None
+# Arguments:
+#   $1 = URL of the tar.gz file
+#   $2 = URL of the tar.gz.asc file holding the gpg signature
+#   $3 = source directory used as target
+#   $4 = name of the utility for which the source is downloaded
+# Outputs:
+#   extracts the source to $3 or exits with error message
+#######################################
+function getSources() {
+  local SOURCE_URL=${1}
+  local SIGNATURE_URL=${2}
+  local SOURCE_DIR=${3}
+  local NAME=${4}
+  echo "Get sources for $NAME into $SOURCE_DIR"
+  # Downloading the openvas-scanner sources
+  curl -f -L "$SOURCE_URL" -o "$SOURCE_DIR/$NAME.tar.gz"
+  curl -f -L "$SIGNATURE_URL" -o "$SOURCE_DIR/$NAME.tar.gz.asc"
+  # Verifying the source file
+  
+  if ! gpg --verify "$SOURCE_DIR/$NAME.tar.gz.asc" "$SOURCE_DIR/$NAME.tar.gz";then
+    error "Integrity check for $SOURCE_DIR/$NAME.tar.gz failed, exit" 
+  fi
+  # If the signature is valid, the tarball can be extracted.
+  echo "tar -C \"$SOURCE_DIR\" -xvzf \"$SOURCE_DIR/$NAME.tar.gz\""
+  tar -C "$SOURCE_DIR" -xvzf "$SOURCE_DIR/$NAME.tar.gz"
 }
 
 # redirect output to 'secondrun.log':
@@ -67,7 +112,8 @@ exec 3>&1 4>&2
 trap 'exec 2>&4 1>&3' 0 1 2 3
 exec 1>/boot/secondrun.log 2>&1
 
-echo "START secondrun.sh"
+CURRENT_USER=$( whoami )
+echo "START secondrun.sh as user: ${CURRENT_USER}"
 # the following variables should be set by firstrun.sh
 HOME_NET=COPY_HOME_NET_HERE
 USE_LATEST_ELK=COPY_USE_LATEST_ELK_HERE
@@ -76,13 +122,17 @@ ELK_REPO_VERSION=COPY_ELK_REPO_VERSION_HERE
 # update the system and install needed packages
 echo "updating the system"
 waitForApt
-sudo apt update
+sudo apt update --allow-releaseinfo-change # bookworn introduced an issue with the release files being not valid
 waitForApt
 sudo apt full-upgrade -y
-# fail2ban is added to add some security to the system. Remove it, if you don't like it
+# do it again, because it seems to fix the bookworm release file issues
+sudo apt update --allow-releaseinfo-change # bookworn introduced an issue with the release files being not valid
 waitForApt
-echo "sudo apt install -y fail2ban"
-sudo apt install -y fail2ban
+sudo apt full-upgrade -y
+# do it again, because it seems to fix the bookworm release file issues
+sudo apt update --allow-releaseinfo-change # bookworn introduced an issue with the release files being not valid
+waitForApt
+sudo apt full-upgrade -y
 
 # increase swap file size
 sudo dphys-swapfile swapoff
@@ -140,6 +190,7 @@ sudo sed -i "s/^\(.*\)rotate .*/\1rotate 1\n\1daily/g" /etc/logrotate.d/suricata
 sudo systemctl start suricata.service
 
 # Setup ELK stack
+# follow https://www.elastic.co/guide/en/elasticsearch/reference/current/deb.html
 ################# DEB WAY ###################
 if [[ ${USE_LATEST_ELK} == true ]] ; then
   wget https://www.elastic.co/downloads/elasticsearch -O elasticsearch.html
@@ -237,6 +288,7 @@ while [ $RETRY_COUNT -le 10 ] ; do
   sleep 10
 done
 
+#clean up
 echo "remove autoinstalled packages" 
 waitForApt
 echo "sudo apt -y autoremove"
